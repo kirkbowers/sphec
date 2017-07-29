@@ -25,6 +25,17 @@ class Reporter {
   }
   
   /**
+   * Takes the reported values in the incoming Reporter and adds them to this one's 
+   *   values.
+   *
+   * @param $reporter Another Reporter to combine into this one.
+   */
+  public function combine($reporter) {
+    $this->passed += $reporter->passed;
+    $this->failed += $reporter->failed;
+  }
+  
+  /**
    * Increments the number of passed tests.
    */
   public function pass() {
