@@ -7,7 +7,7 @@ namespace Sphec;
  * @author Kirk Bowers
  */
 class Example extends Runnable {
-  function __construct($label, $block, $indent = '', $parent = NULL) {
+  function __construct($label, $block, $indent, $parent) {
     parent::__construct($label, $block, $indent, $parent);
   }
   
@@ -21,11 +21,17 @@ class Example extends Runnable {
   }
 
   public function run() {
+    $this->parent->run_befores();
+  
     // TODO:
     // Make this respect a verbose setting.
-    echo $this->indent . $this->label. "\n";
-    echo $this->indent;
+    if (! $this->quiet) {
+      echo $this->indent . $this->label. "\n";
+      echo $this->indent;
+    }
     $this->block->__invoke($this);
-    echo "\n";
+    if (! $this->quiet) {
+      echo "\n";
+    }
   }
 }

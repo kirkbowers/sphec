@@ -14,7 +14,7 @@ class Reporter {
    * If true, the reporter will echo to the console "." for passed tests and "F" for
    * failed tests.  Defaults to true.
    */
-  public $verbose = true;
+  public $quiet = true;
   
   /**
    * Resets all reported counts to zero.
@@ -39,7 +39,7 @@ class Reporter {
    * Increments the number of passed tests.
    */
   public function pass() {
-    if ($this->verbose) {
+    if (! $this->quiet) {
       echo ".";
     }
     $this->passed += 1;
@@ -49,7 +49,7 @@ class Reporter {
    * Increments the number of failed tests.
    */
   public function fail() {
-    if ($this->verbose) {
+    if (! $this->quiet) {
       echo "F";
     }
     $this->failed += 1;

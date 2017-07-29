@@ -15,11 +15,13 @@ require 'Example.php';
  */
 class Context extends Runnable {
   private $tests = array();
+  private $befores = array();
   public  $expector;
   
   function __construct($label, $block, $indent = '', $parent = NULL) {
     parent::__construct($label, $block, $indent, $parent);
     $this->expector = new Expector();
+    $this->expector->quiet = $this->quiet;
     $block($this);
   }
 
@@ -37,15 +39,27 @@ class Context extends Runnable {
    */
   public function describe($label, $block) {
     // TODO:
-    // It needs to be able to handle `before` and `after` actions.  They must fire
+    // It needs to be able to handle `after` actions.  They must fire
     // recursively, meaning outer contexts fire first on befores and last on afters.
     
     // TODO:
     // It needs to be able to provide local variables that can be set in before blocks.
     // Those variables need to propogate recursively.
-    
-    $this->tests[] = new Context($label, $block, $this->indent . '  ', $this);
+    return $this->tests[] = new Context($label, $block, $this->indent . '  ', $this);
   }
+  
+  
+  /**
+   * Creates a new before action.  It will be run before every example in this context.
+   *
+   * @param $block An anonymous function that performs all the setup
+   *    for this context.  It should take one parameter, which will be this Context 
+   *    instance.
+   */
+  public function before($block) {
+    return $this->befores[] = $block;
+  }
+  
   
   /**
    * Creates a new example.
@@ -60,7 +74,21 @@ class Context extends Runnable {
    *    instance that can perform `expect` methods.
    */
   public function it($label, $block) {
-    $this->tests[] = new Example($label, $block, $this->indent . '  ', $this);
+    return $this->tests[] = new Example($label, $block, $this->indent . '  ', $this);
+  }
+  
+  /**
+   * Runs all the befores of containing contexts and then this context's befores in the
+   * order they were added.
+   */
+  public function run_befores() {
+    if ($this->parent) {
+      $this->parent->run_befores();
+    }
+    
+    foreach ($this->befores as $before) {
+      $before($this);
+    }
   }
   
   /**
@@ -69,9 +97,9 @@ class Context extends Runnable {
   public function run() {
     $this->expector->reset();
 
-    // TODO:
-    // Make this respect a verbose setting.
-    echo $this->indent . $this->label. "\n"; 
+    if (! $this->quiet) {
+      echo $this->indent . $this->label. "\n"; 
+    }
     
     foreach ($this->tests as $test) {
       $test->run();

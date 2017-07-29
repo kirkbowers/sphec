@@ -5,3 +5,4 @@
 # In the future, I should allow contributors to work in DOS.....
 
 php spec/Tester_spec.php 
+php spec/Context_spec.php 
