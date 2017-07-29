@@ -16,6 +16,7 @@ require 'Example.php';
 class Context extends Runnable {
   private $tests = array();
   private $befores = array();
+  private $afters = array();
   public  $expector;
   
   function __construct($label, $block, $indent = '', $parent = NULL) {
@@ -60,6 +61,17 @@ class Context extends Runnable {
     return $this->befores[] = $block;
   }
   
+  /**
+   * Creates a new after action.  It will be run after every example in this context.
+   *
+   * @param $block An anonymous function that performs all the tear down
+   *    for this context.  It should take one parameter, which will be this Context 
+   *    instance.
+   */
+  public function after($block) {
+    return $this->afters[] = $block;
+  }
+  
   
   /**
    * Creates a new example.
@@ -88,6 +100,20 @@ class Context extends Runnable {
     
     foreach ($this->befores as $before) {
       $before($this);
+    }
+  }
+  
+  /**
+   * Runs all the befores of containing contexts and then this context's befores in the
+   * order they were added.
+   */
+  public function run_afters() {    
+    foreach ($this->afters as $after) {
+      $after($this);
+    }
+
+    if ($this->parent) {
+      $this->parent->run_afters();
     }
   }
   

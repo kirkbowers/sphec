@@ -33,5 +33,7 @@ class Example extends Runnable {
     if (! $this->quiet) {
       echo "\n";
     }
+    
+    $this->parent->run_afters();
   }
 }
