@@ -1,0 +1,16 @@
+{
+    "name": "kirkbowers/sphec",
+    "description": "A Behavior Driven Development (BDD) toolkit in PHP.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kirk Bowers",
+            "email": "kirkbowers@yahoo.com"
+        }
+    ],
+    "autoload": {
+        "prs-4": {"Sphec\\": "src/"}
+    },
+    "require": {}
+}
