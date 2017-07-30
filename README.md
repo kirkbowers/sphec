@@ -1,4 +1,4 @@
-# sphec
+# Sphec
 A Behavior-Driven Development (BDD) toolkit in PHP.
 
 ## Introduction
@@ -101,4 +101,20 @@ You are in a setup scope whenever you are inside a `before` or `after`.  Setup b
 ### Example scope
 
 You are in an example scope whenever you are inside an `it` block.  Example blocks are executed lazily, only at the time that tests are actually run.  The one special command available is `expect`.  Local member variables are available, as this is where they should be set up or torn down.
+
+## Expectations
+
+Tests are performed inside of examples by stating expectations.  An expectation always takes this form:
+
+      $spec->expect($computed)->test($expected);
+      
+Where `test` is one of the test methods listed below (some tests, like `to_be_falsey`, do not take an `$expected` parameter).  Execution will continue after any expectations that fail, with all the failures gathered up and reported on the console after all tests have been performed.
+
+### Available tests
+
+`to_be_equivalent($expected)` passes if the computed and expected values are both the same value and same type.  The test is performed with `===`.
+
+`to_be($expected)` is a shortcut alias for `to_be_equivalent`.
+
+`to_equal($expected)` passes if the computed and expected values are the same value after type coercion.  The test is performed with `==`.
 
