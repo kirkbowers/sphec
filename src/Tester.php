@@ -12,7 +12,7 @@ class Tester {
    * @param $reporter A Sphec\Reporter object (or any duck-typed equivalent) to which
    *  the result of any tests are to be reported (whether the test passed or failed).
    */
-  public function __construct($value, $reporter, $example) {
+  public function __construct($value, $reporter, $example = NULL) {
     $this->value = $value;
     $this->reporter = $reporter;
     $this->example = $example;
@@ -47,6 +47,14 @@ class Tester {
   }
 
   /**
+   * Tests that the computed value is strictly the boolean value true.
+   *
+   */
+  public function to_be_true() {
+    $this->report($this->value === true, 'to be true');
+  }
+
+  /**
    * Reports whether the test passed or failed.
    *
    * @param $result A truthy value will cause a "pass" to be reported, otherwise "fail"
@@ -56,7 +64,11 @@ class Tester {
     if ($result) {
       $this->reporter->pass();
     } else {
-      $this->reporter->fail($this->example->get_full_name(), $this->value, $test, $expected);
+      $name = '';
+      if ($this->example) {
+        $name = $this->example->get_full_name();
+      }
+      $this->reporter->fail($name, $this->value, $test, $expected);
     }
   }
 }

@@ -118,3 +118,5 @@ Where `test` is one of the test methods listed below (some tests, like `to_be_fa
 
 `to_equal($expected)` passes if the computed and expected values are the same value after type coercion.  The test is performed with `==`.
 
+`to_be_true()` passes if the computed value is strictly true (of type boolean).
+

@@ -134,8 +134,6 @@ class Context extends Runnable {
    * Runs all the tests in this scope.
    */
   public function run() {
-    $this->_expector->reset();
-
     if ($this->_expector->output && $this->_expector->output->isVerbose()) {
       $this->_expector->output->writeln($this->_indent . $this->_label); 
     }
