@@ -9,6 +9,7 @@ namespace Sphec;
 class Example extends Runnable {
   function __construct($label, $block, $indent, $parent) {
     parent::__construct($label, $block, $indent, $parent);
+    $this->expector = $parent->expector;
   }
   
   /**
@@ -17,21 +18,19 @@ class Example extends Runnable {
    * @param $value The calculated value to be compared to an expected value.
    */
   public function expect($value) {
-    return $this->parent->expector->test($value);
+    return $this->expector->test($value);
   }
 
   public function run() {
     $this->parent->run_befores();
   
-    // TODO:
-    // Make this respect a verbose setting.
-    if (! $this->quiet) {
-      echo $this->indent . $this->label. "\n";
-      echo $this->indent;
+    if ($this->expector->output && $this->expector->output->isVerbose()) {
+      $this->expector->output->writeln($this->indent . $this->label);
+      $this->expector->output->write($this->indent);
     }
     $this->block->__invoke($this);
-    if (! $this->quiet) {
-      echo "\n";
+    if ($this->expector->output && $this->expector->output->isVerbose()) {
+      $this->expector->output->writeln('');
     }
     
     $this->parent->run_afters();

@@ -12,10 +12,15 @@ class Context extends Runnable {
   private $afters = array();
   public  $expector;
   
-  function __construct($label, $block, $indent = '', $parent = NULL) {
+  function __construct($label, $block, $indent = '', $parent = NULL, $expector = NULL) {
     parent::__construct($label, $block, $indent, $parent);
-    $this->expector = new Expector();
-    $this->expector->quiet = $this->quiet;
+    if ($expector) {
+      $this->expector = $expector;
+    } else if ($parent) {
+      $this->expector = $parent->expector;
+    } else {
+      $this->expector = new Expector();
+    }
     $block($this);
   }
 
@@ -116,17 +121,12 @@ class Context extends Runnable {
   public function run() {
     $this->expector->reset();
 
-    if (! $this->quiet) {
-      echo $this->indent . $this->label. "\n"; 
+    if ($this->expector->output && $this->expector->output->isVerbose()) {
+      $this->expector->output->writeln($this->indent . $this->label); 
     }
     
     foreach ($this->tests as $test) {
       $test->run();
-    }
-    
-    // Fold in the counts of successes and failures from subcontexts.
-    if ($this->parent) {
-      $this->parent->expector->combine($this->expector);
     }
   }
 }

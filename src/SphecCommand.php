@@ -51,11 +51,12 @@ class SphecCommand extends Command {
       }
     }
 
-    // TODO:
-    // Make the Sphec object compile all tests together into one data structure before
-    // running.  Make it take this output object and respect the verbose settings.
+
+    // set up the Sphec environment to collect all the results in one Expector/Reporter
+    // that has this Symfony Output object.
+    Sphec::$expector = new Expector($output);
+
     foreach ($files as $file) {
-//       $output->writeln($file);
       include $file;
     }
     

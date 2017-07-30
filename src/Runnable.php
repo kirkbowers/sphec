@@ -11,17 +11,14 @@ abstract class Runnable {
   protected $block;
   protected $indent;
   protected $parent;
-  public $quiet = false;
+  
+  public $expector;
   
   function __construct($label, $block, $indent = '', $parent = NULL) {
     $this->label = $label;
     $this->block = $block;
     $this->indent = $indent;
     $this->parent = $parent;
-    
-    if ($parent) {
-      $this->quiet = $parent->quiet;
-    }
   }
 
   abstract public function run();

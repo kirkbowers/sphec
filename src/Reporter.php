@@ -10,11 +10,15 @@ class Reporter {
   public $passed = 0;
   public $failed = 0;
   
+  public $output = NULL;
+  
   /**
-   * If true, the reporter will echo to the console "." for passed tests and "F" for
-   * failed tests.  Defaults to true.
+   * @param $output An optional Symfony OutputInterface object for reporting to the 
+   *    console.
    */
-  public $quiet = true;
+  function __construct($output = NULL) {
+    $this->output = $output;  
+  }
   
   /**
    * Resets all reported counts to zero.
@@ -39,8 +43,8 @@ class Reporter {
    * Increments the number of passed tests.
    */
   public function pass() {
-    if (! $this->quiet) {
-      echo ".";
+    if ($this->output && !$this->output->isQuiet()) {
+      $this->output->write(".");
     }
     $this->passed += 1;
   }
@@ -49,8 +53,8 @@ class Reporter {
    * Increments the number of failed tests.
    */
   public function fail() {
-    if (! $this->quiet) {
-      echo "F";
+    if ($this->output && !$this->output->isQuiet()) {
+      $this->output->write("<fg=red>F</fg=red>");
     }
     $this->failed += 1;
   }

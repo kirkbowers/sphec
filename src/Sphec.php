@@ -9,6 +9,7 @@ namespace Sphec;
 class Sphec {
   private static $sphecs = array();
 
+  public static $expector = NULL;
 
   /** 
    * The entry point for building a specification.
@@ -20,25 +21,25 @@ class Sphec {
    *   the mojo that a Context does (describe, it, etc.).
    */
   public static function specify($label, $block) {
-    $spec = new Context($label, $block);  
+    $spec = new Context($label, $block, '', NULL, self::$expector);  
     
     self::$sphecs[] = $spec;  
   }
   
   public static function run() {
-    $reporter = new Reporter(); 
-  
     foreach (self::$sphecs as $spec) {
       $spec->run();
-      $reporter->combine($spec->expector);
     }
 
-    echo "Successes: " . $reporter->passed . ", Failures: " . $reporter->failed . "\n";
+    if (self::$expector->output && !self::$expector->output->isQuiet()) {
+      self::$expector->output->writeln("");
+      self::$expector->output->writeln("Successes: " . self::$expector->passed . ", Failures: " . self::$expector->failed);
 
-    if ($reporter->failed == 0) {
-      echo "Success!\n";
-    } else {
-      echo "Failure!\n";
+      if (self::$expector->failed == 0) {
+        self::$expector->output->writeln("<fg=green>Success!</fg=green>");
+      } else {
+        self::$expector->output->writeln("<fg=red>Failure!</fg=red>");
+      }
     }
   }
 }
