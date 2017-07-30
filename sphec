@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+
+<?php 
+
+require_once __DIR__ . '/vendor/autoload.php'; 
+
+use Symfony\Component\Console\Application; 
+
+$app = new Application();
+
+$app->add(new Sphec\SphecCommand());
+
+$app->setDefaultCommand('sphec', true);
+
+$app->run();

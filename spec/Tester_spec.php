@@ -1,10 +1,5 @@
 <?php
 
-// TODO:
-// It would be nice if this autoloaded.  Autoloading in PHP is not something I've used 
-// before since WordPress is all manually loaded.
-require __DIR__ . '/../src/Sphec.php';
-
 Sphec\Sphec::specify('Tester', function($spec) {
   $spec->before(function($spec) {
     echo "Outer Before\n";

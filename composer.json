@@ -10,7 +10,9 @@
         }
     ],
     "autoload": {
-        "prs-4": {"Sphec\\": "src/"}
+        "psr-4": {"Sphec\\": "src/"}
     },
-    "require": {}
+    "require": {
+        "symfony/console": "v3.3.*"
+    }
 }

@@ -1,12 +1,6 @@
 <?php
 namespace Sphec;
 
-// TODO:
-// It would be nice if this autoloaded.  Autoloading in PHP is not something I've used 
-// before since WordPress is all manually loaded.
-require 'Reporter.php';
-require 'Tester.php';
-
 /**
  * Builds an expectation for a test.  Also reports the results of all tests.
  *

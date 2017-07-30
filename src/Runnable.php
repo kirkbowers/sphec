@@ -1,11 +1,6 @@
 <?php
 namespace Sphec;
 
-// TODO:
-// It would be nice if this autoloaded.  Autoloading in PHP is not something I've used 
-// before since WordPress is all manually loaded.
-// require 'Expector.php';
-
 /**
  * The control class for building specifications.
  *
