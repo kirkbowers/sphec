@@ -7,6 +7,8 @@ namespace Sphec;
  * @author Kirk Bowers
  */
 class Sphec {
+  private static $sphecs = array();
+
 
   /** 
    * The entry point for building a specification.
@@ -18,13 +20,22 @@ class Sphec {
    *   the mojo that a Context does (describe, it, etc.).
    */
   public static function specify($label, $block) {
-    $spec = new Context($label, $block);
-    $spec->run();
+    $spec = new Context($label, $block);  
+    
+    self::$sphecs[] = $spec;  
+  }
+  
+  public static function run() {
+    $reporter = new Reporter(); 
+  
+    foreach (self::$sphecs as $spec) {
+      $spec->run();
+      $reporter->combine($spec->expector);
+    }
 
-    
-    echo "Successes: " . $spec->expector->passed . ", Failures: " . $spec->expector->failed . "\n";
-    
-    if ($spec->expector->failed == 0) {
+    echo "Successes: " . $reporter->passed . ", Failures: " . $reporter->failed . "\n";
+
+    if ($reporter->failed == 0) {
       echo "Success!\n";
     } else {
       echo "Failure!\n";

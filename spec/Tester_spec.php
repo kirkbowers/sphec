@@ -1,15 +1,7 @@
 <?php
 
 Sphec\Sphec::specify('Tester', function($spec) {
-  $spec->before(function($spec) {
-    echo "Outer Before\n";
-  });
-
   $spec->describe('to_be_equivalent', function($spec) {
-    $spec->before(function($spec) {
-      echo "Before\n";
-    });
-  
     $spec->it('passes to_be_equivalent with same value and type', function($spec) {
       // TODO:
       // These first two lines that are repeated over and over should be moved up to

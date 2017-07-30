@@ -58,6 +58,8 @@ class SphecCommand extends Command {
 //       $output->writeln($file);
       include $file;
     }
+    
+    Sphec::run();
   }
 }
 
