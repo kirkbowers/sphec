@@ -12,9 +12,10 @@ class Tester {
    * @param $reporter A Sphec\Reporter object (or any duck-typed equivalent) to which
    *  the result of any tests are to be reported (whether the test passed or failed).
    */
-  public function __construct($value, $reporter) {
+  public function __construct($value, $reporter, $example) {
     $this->value = $value;
     $this->reporter = $reporter;
+    $this->example = $example;
   }
   
   /**
@@ -23,7 +24,7 @@ class Tester {
    * @param $expected The expected value to be tested against.
    */
   public function to_be_equivalent($expected) {
-    $this->report($this->value === $expected);
+    $this->report($this->value === $expected, 'to be equivalent to', $expected);
   }
   
   /**
@@ -42,7 +43,7 @@ class Tester {
    * @param $expected The expected value to be tested against.
    */
   public function to_equal($expected) {
-    $this->report($this->value == $expected);
+    $this->report($this->value == $expected, 'to equal', $expected);
   }
 
   /**
@@ -51,11 +52,11 @@ class Tester {
    * @param $result A truthy value will cause a "pass" to be reported, otherwise "fail"
    *   will be reported.
    */
-  protected function report($result) {
+  protected function report($result, $test, $expected = NULL) {
     if ($result) {
       $this->reporter->pass();
     } else {
-      $this->reporter->fail();
+      $this->reporter->fail($this->example->get_full_name(), $this->value, $test, $expected);
     }
   }
 }

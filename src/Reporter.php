@@ -9,6 +9,7 @@ namespace Sphec;
 class Reporter {
   public $passed = 0;
   public $failed = 0;
+  private $failures = array();
   
   public $output = NULL;
   
@@ -24,8 +25,9 @@ class Reporter {
    * Resets all reported counts to zero.
    */
   public function reset() {
-    $passed = 0;
-    $failed = 0;
+    $this->passed = 0;
+    $this->failed = 0;
+    $this->failures = array();
   }
   
   /**
@@ -52,10 +54,39 @@ class Reporter {
   /**
    * Increments the number of failed tests.
    */
-  public function fail() {
+  public function fail($label, $computed, $test, $expected) {
     if ($this->output && !$this->output->isQuiet()) {
       $this->output->write("<fg=red>F</fg=red>");
     }
     $this->failed += 1;
+    
+    $this->failures[] = array(
+      'label'    => $label,
+      'computed' => $computed,
+      'test'     => $test,
+      'expected' => $expected
+    );
+  }
+  
+  public function report_failures() {
+    if ($this->output && !$this->output->isQuiet()) {
+      if (count($this->failures) > 0) {
+        $this->output->writeln("");      
+      }
+    
+      foreach ($this->failures as $failure) {
+        $this->output->writeln("<fg=red>Failed:</fg=red> " . $failure['label']);
+        $this->output->writeln("Computed:");
+        $this->output->writeln(var_export($failure['computed'], true));
+        $this->output->write("Expected " . $failure['test']);
+        if (isset($failure['expected'])) {
+          $this->output->writeln(':');
+          $this->output->writeln(var_export($failure['expected'], true));
+        } else {
+          $this->output->writeln('.');
+        }
+        $this->output->writeln("");
+      }
+    }  
   }
 }

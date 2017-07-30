@@ -18,7 +18,7 @@ class Example extends Runnable {
    * @param $value The calculated value to be compared to an expected value.
    */
   public function expect($value) {
-    return $this->_expector->test($value);
+    return $this->_expector->test($value, $this);
   }
 
   public function run() {

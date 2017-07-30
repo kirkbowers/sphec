@@ -24,5 +24,14 @@ abstract class Runnable {
     $this->_parent = $parent;
   }
 
+  public function get_full_name() {
+    $result = '';
+    if ($this->_parent) {
+      $result = $this->_parent->get_full_name() . ' ';
+    }
+    
+    return $result . $this->_label;
+  }
+
   abstract public function run();
 }

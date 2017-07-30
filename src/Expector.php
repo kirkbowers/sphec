@@ -17,7 +17,7 @@ class Expector extends Reporter {
    * @param $value The value to be tested.
    * @return Sphec\Tester A new Tester object that will use this Expector as its Reporter.
    */
-  public function test($value) {
-    return new Tester($value, $this);
+  public function test($value, $example) {
+    return new Tester($value, $this, $example);
   }
 }

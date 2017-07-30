@@ -33,6 +33,9 @@ class Sphec {
 
     if (self::$expector->output && !self::$expector->output->isQuiet()) {
       self::$expector->output->writeln("");
+
+      self::$expector->report_failures();
+
       self::$expector->output->writeln("Successes: " . self::$expector->passed . ", Failures: " . self::$expector->failed);
 
       if (self::$expector->failed == 0) {
