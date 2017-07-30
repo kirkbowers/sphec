@@ -39,6 +39,23 @@ class Context extends Runnable {
     return $this->_tests[] = new Context($label, $block, $this->_indent . '  ', $this);
   }
   
+  /**
+   * Creates a new subcontext.
+   *
+   * This is an alias to `describe`.  It has a different name just to make things in
+   * your spec files a little more human readable.  It's intended to be used in a 
+   * different context than `describe`.  Usually it is used to group together tests
+   * that share a set of preconditions.  They will share a `before` set up.
+   *
+   * @param $label A string label of what is being described.
+   * @param $block An anonymous function that performs all the specifying and testing
+   *    for this subcontext.  It should take one parameter, which will be this Context 
+   *    instance that can perform all
+   *    the mojo that a Context does (describe, it, etc.).
+   */
+  public function context( $label, $block) {
+    return $this->describe($label, $block);
+  }  
   
   /**
    * Creates a new before action.  It will be run before every example in this context.

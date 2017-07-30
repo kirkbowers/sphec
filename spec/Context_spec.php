@@ -93,7 +93,7 @@ Sphec\Sphec::specify('Context', function($spec) {
       });
 
 
-      $middle = $outer->describe('Middle', function($spec) use (&$tracker) {
+      $middle = $outer->context('Middle', function($spec) use (&$tracker) {
         $spec->before(function($spec) use (&$tracker) {
           $tracker[] = 'Before Middle';
         });
@@ -112,7 +112,7 @@ Sphec\Sphec::specify('Context', function($spec) {
       });
 
 
-      $inner = $middle->describe('Inner', function($spec) use (&$tracker) {
+      $inner = $middle->context('Inner', function($spec) use (&$tracker) {
         $spec->before(function($spec) use (&$tracker) {
           $tracker[] = 'Before Inner';
         });
