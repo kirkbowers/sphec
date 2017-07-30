@@ -121,3 +121,9 @@ Where `test` is one of the test methods listed below (some tests, like `to_be_fa
 `to_be_true()` passes if the computed value is strictly true (of type boolean).
 
 `to_be_truthy()` passes if the computed value is true after type coercion.
+
+`to_be_false()` passes if the computed value is strictly false (of type boolean).
+
+`to_be_falsy()` passes if the computed value is false after type coercion.  In PHP a lot of values satisfy this condition, including false, null, 0, "0", array(), and an unset variable.
+
+

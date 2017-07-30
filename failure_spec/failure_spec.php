@@ -28,4 +28,12 @@ Sphec\Sphec::specify('Failure', function($spec) {
   $spec->it('fails with [] and to_be_truthy', function($spec) {
     $spec->expect(array())->to_be_truthy();
   });
+
+  $spec->it('fails with true and to_be_false', function($spec) {
+    $spec->expect(true)->to_be_false();
+  });
+
+  $spec->it('fails with 1 and to_be_falsy', function($spec) {
+    $spec->expect(1)->to_be_falsy();
+  });
 });

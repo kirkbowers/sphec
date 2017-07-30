@@ -63,6 +63,22 @@ class Tester {
   }
 
   /**
+   * Tests that the computed value is strictly the boolean value false.
+   *
+   */
+  public function to_be_false() {
+    $this->report($this->value === false, 'to be false');
+  }
+
+  /**
+   * Tests that the computed value is false after type coercion.
+   *
+   */
+  public function to_be_falsy() {
+    $this->report(! $this->value, 'to be falsy');
+  }
+
+  /**
    * Reports whether the test passed or failed.
    *
    * @param $result A truthy value will cause a "pass" to be reported, otherwise "fail"

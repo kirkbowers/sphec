@@ -129,4 +129,85 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->expect($spec->reporter->failed)->to_be(1);
     });
   });
+
+  $spec->describe('to_be_false', function($spec) {
+    $spec->it('passes with false', function($spec) {
+      $spec->tester = new Sphec\Tester(false, $spec->reporter);
+      $spec->tester->to_be_false();
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('fails with true', function($spec) {
+      $spec->tester = new Sphec\Tester(true, $spec->reporter);
+      $spec->tester->to_be_false();
+      $spec->expect($spec->reporter->passed)->to_be(0);
+      $spec->expect($spec->reporter->failed)->to_be(1);
+    });
+
+    $spec->it('fails with a non-boolean falsy value', function($spec) {
+      $spec->tester = new Sphec\Tester(0, $spec->reporter);
+      $spec->tester->to_be_false();
+      $spec->expect($spec->reporter->passed)->to_be(0);
+      $spec->expect($spec->reporter->failed)->to_be(1);
+    });
+  });
+
+  $spec->describe('to_be_falsy', function($spec) {
+    $spec->it('passes with false', function($spec) {
+      $spec->tester = new Sphec\Tester(false, $spec->reporter);
+      $spec->tester->to_be_falsy();
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('fails with true', function($spec) {
+      $spec->tester = new Sphec\Tester(true, $spec->reporter);
+      $spec->tester->to_be_falsy();
+      $spec->expect($spec->reporter->passed)->to_be(0);
+      $spec->expect($spec->reporter->failed)->to_be(1);
+    });
+
+    $spec->it('fails with a non-boolean truthy value', function($spec) {
+      $spec->tester = new Sphec\Tester(1, $spec->reporter);
+      $spec->tester->to_be_falsy();
+      $spec->expect($spec->reporter->passed)->to_be(0);
+      $spec->expect($spec->reporter->failed)->to_be(1);
+    });
+
+    $spec->it('passes with zero', function($spec) {
+      $spec->tester = new Sphec\Tester(0, $spec->reporter);
+      $spec->tester->to_be_falsy();
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('passes with null', function($spec) {
+      $spec->tester = new Sphec\Tester(null, $spec->reporter);
+      $spec->tester->to_be_falsy();
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('passes with string "0"', function($spec) {
+      $spec->tester = new Sphec\Tester('0', $spec->reporter);
+      $spec->tester->to_be_falsy();
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('passes with empty array', function($spec) {
+      $spec->tester = new Sphec\Tester(array(), $spec->reporter);
+      $spec->tester->to_be_falsy();
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('passes with undefined', function($spec) {
+      $spec->tester = new Sphec\Tester($x, $spec->reporter);
+      $spec->tester->to_be_falsy();
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+  });
 });
