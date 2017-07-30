@@ -99,4 +99,34 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->expect($spec->reporter->failed)->to_be(1);
     });
   });
+
+  $spec->describe('to_be_truthy', function($spec) {
+    $spec->it('passes with true', function($spec) {
+      $spec->tester = new Sphec\Tester(true, $spec->reporter);
+      $spec->tester->to_be_truthy();
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('fails with false', function($spec) {
+      $spec->tester = new Sphec\Tester(false, $spec->reporter);
+      $spec->tester->to_be_truthy();
+      $spec->expect($spec->reporter->passed)->to_be(0);
+      $spec->expect($spec->reporter->failed)->to_be(1);
+    });
+
+    $spec->it('passes with a non-boolean truthy value', function($spec) {
+      $spec->tester = new Sphec\Tester(1, $spec->reporter);
+      $spec->tester->to_be_truthy();
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('fails with a non-boolean falsy value', function($spec) {
+      $spec->tester = new Sphec\Tester(0, $spec->reporter);
+      $spec->tester->to_be_truthy();
+      $spec->expect($spec->reporter->passed)->to_be(0);
+      $spec->expect($spec->reporter->failed)->to_be(1);
+    });
+  });
 });

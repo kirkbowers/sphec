@@ -55,6 +55,14 @@ class Tester {
   }
 
   /**
+   * Tests that the computed value is true after type coercion.
+   *
+   */
+  public function to_be_truthy() {
+    $this->report($this->value, 'to be truthy');
+  }
+
+  /**
    * Reports whether the test passed or failed.
    *
    * @param $result A truthy value will cause a "pass" to be reported, otherwise "fail"
