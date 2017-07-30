@@ -9,7 +9,7 @@ namespace Sphec;
 class Example extends Runnable {
   function __construct($label, $block, $indent, $parent) {
     parent::__construct($label, $block, $indent, $parent);
-    $this->expector = $parent->expector;
+    $this->_expector = $parent->_expector;
   }
   
   /**
@@ -18,21 +18,21 @@ class Example extends Runnable {
    * @param $value The calculated value to be compared to an expected value.
    */
   public function expect($value) {
-    return $this->expector->test($value);
+    return $this->_expector->test($value);
   }
 
   public function run() {
-    $this->parent->run_befores();
+    $this->_parent->run_befores($this);
   
-    if ($this->expector->output && $this->expector->output->isVerbose()) {
-      $this->expector->output->writeln($this->indent . $this->label);
-      $this->expector->output->write($this->indent);
+    if ($this->_expector->output && $this->_expector->output->isVerbose()) {
+      $this->_expector->output->writeln($this->_indent . $this->_label);
+      $this->_expector->output->write($this->_indent);
     }
-    $this->block->__invoke($this);
-    if ($this->expector->output && $this->expector->output->isVerbose()) {
-      $this->expector->output->writeln('');
+    $this->_block->__invoke($this);
+    if ($this->_expector->output && $this->_expector->output->isVerbose()) {
+      $this->_expector->output->writeln('');
     }
     
-    $this->parent->run_afters();
+    $this->_parent->run_afters($this);
   }
 }

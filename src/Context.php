@@ -7,19 +7,18 @@ namespace Sphec;
  * @author Kirk Bowers
  */
 class Context extends Runnable {
-  private $tests = array();
-  private $befores = array();
-  private $afters = array();
-  public  $expector;
+  private $_tests = array();
+  private $_befores = array();
+  private $_afters = array();
   
   function __construct($label, $block, $indent = '', $parent = NULL, $expector = NULL) {
     parent::__construct($label, $block, $indent, $parent);
     if ($expector) {
-      $this->expector = $expector;
+      $this->_expector = $expector;
     } else if ($parent) {
-      $this->expector = $parent->expector;
+      $this->_expector = $parent->_expector;
     } else {
-      $this->expector = new Expector();
+      $this->_expector = new Expector();
     }
     $block($this);
   }
@@ -37,14 +36,7 @@ class Context extends Runnable {
    *    the mojo that a Context does (describe, it, etc.).
    */
   public function describe($label, $block) {
-    // TODO:
-    // It needs to be able to handle `after` actions.  They must fire
-    // recursively, meaning outer contexts fire first on befores and last on afters.
-    
-    // TODO:
-    // It needs to be able to provide local variables that can be set in before blocks.
-    // Those variables need to propogate recursively.
-    return $this->tests[] = new Context($label, $block, $this->indent . '  ', $this);
+    return $this->_tests[] = new Context($label, $block, $this->_indent . '  ', $this);
   }
   
   
@@ -52,22 +44,22 @@ class Context extends Runnable {
    * Creates a new before action.  It will be run before every example in this context.
    *
    * @param $block An anonymous function that performs all the setup
-   *    for this context.  It should take one parameter, which will be this Context 
-   *    instance.
+   *    for this context.  It should take one parameter, which will be the Example 
+   *    instance that will consume any local variables set up.
    */
   public function before($block) {
-    return $this->befores[] = $block;
+    return $this->_befores[] = $block;
   }
   
   /**
    * Creates a new after action.  It will be run after every example in this context.
    *
    * @param $block An anonymous function that performs all the tear down
-   *    for this context.  It should take one parameter, which will be this Context 
-   *    instance.
+   *    for this context.  It should take one parameter, which will be the Example 
+   *    instance for which tear down is needed.
    */
   public function after($block) {
-    return $this->afters[] = $block;
+    return $this->_afters[] = $block;
   }
   
   
@@ -84,34 +76,40 @@ class Context extends Runnable {
    *    instance that can perform `expect` methods.
    */
   public function it($label, $block) {
-    return $this->tests[] = new Example($label, $block, $this->indent . '  ', $this);
+    return $this->_tests[] = new Example($label, $block, $this->_indent . '  ', $this);
   }
   
   /**
    * Runs all the befores of containing contexts and then this context's befores in the
    * order they were added.
+   *
+   * @param $scope The object scope of an Example being run for which local variables
+   *    need to be set up.
    */
-  public function run_befores() {
-    if ($this->parent) {
-      $this->parent->run_befores();
+  public function run_befores($scope) {
+    if ($this->_parent) {
+      $this->_parent->run_befores($scope);
     }
     
-    foreach ($this->befores as $before) {
-      $before($this);
+    foreach ($this->_befores as $before) {
+      $before($scope);
     }
   }
   
   /**
    * Runs all the befores of containing contexts and then this context's befores in the
    * order they were added.
+   *
+   * @param $scope The object scope of an Example being run for which local variables
+   *    need to be torn down.
    */
-  public function run_afters() {    
-    foreach ($this->afters as $after) {
-      $after($this);
+  public function run_afters($scope) {    
+    foreach ($this->_afters as $after) {
+      $after($scope);
     }
 
-    if ($this->parent) {
-      $this->parent->run_afters();
+    if ($this->_parent) {
+      $this->_parent->run_afters($scope);
     }
   }
   
@@ -119,13 +117,13 @@ class Context extends Runnable {
    * Runs all the tests in this scope.
    */
   public function run() {
-    $this->expector->reset();
+    $this->_expector->reset();
 
-    if ($this->expector->output && $this->expector->output->isVerbose()) {
-      $this->expector->output->writeln($this->indent . $this->label); 
+    if ($this->_expector->output && $this->_expector->output->isVerbose()) {
+      $this->_expector->output->writeln($this->_indent . $this->_label); 
     }
     
-    foreach ($this->tests as $test) {
+    foreach ($this->_tests as $test) {
       $test->run();
     }
   }
