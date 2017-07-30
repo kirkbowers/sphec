@@ -1,0 +1,14 @@
+{
+    "autoload": {
+        "psr-4": {"TestProject\\": "src/"}
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/kirkbowers/sphec"
+        }
+    ],
+    "require": {
+        "kirkbowers/sphec": "dev-development"
+    }
+}

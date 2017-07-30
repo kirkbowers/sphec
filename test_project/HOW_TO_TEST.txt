@@ -1,0 +1,11 @@
+This test_project directory is here to allow testing the command line script as a standalone.
+
+To test it out, type:
+
+    ./setup.sh
+    
+The run:
+
+    ./sphec
+    
+It should successfully run the suite of tests in the spec subdirectory.
