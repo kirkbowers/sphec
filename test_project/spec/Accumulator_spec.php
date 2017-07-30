@@ -1,13 +1,25 @@
 <?php
 
+// Specify the behavior of a class
 Sphec\Sphec::specify('Accumulator', function($spec) {
+
+  // Describe how a method of that class is expected to behave
   $spec->describe('add', function($spec) {
+
+    // Set up a subcontext with pre-test conditions shared by multiple examples.
     $spec->context('with default starting value', function($spec) {
+    
+      // Set up those pre-test conditions in a before action
       $spec->before(function($spec) {
         $spec->accumulator = new TestProject\Accumulator;
       });
       
+      // Provide examples of what the expected behavior is.
       $spec->it('should start with a zero value', function($spec) {
+        // Note, the "local" member variable accumulator that was create in `before` is
+        // available inside the examples.
+        
+        // Write tests as expectations.
         $spec->expect($spec->accumulator->get_value())->to_be(0);
       });
       
@@ -23,6 +35,7 @@ Sphec\Sphec::specify('Accumulator', function($spec) {
       });      
     });
 
+    // Set up a different context with different pre-test conditions.
     $spec->context('with supplied starting value', function($spec) {
       $spec->before(function($spec) {
         $spec->accumulator = new TestProject\Accumulator(2);
