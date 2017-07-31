@@ -312,4 +312,64 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->expect($spec->reporter->failed)->to_be(0);
     });
   });
+  
+  $spec->describe('to_be_less_than', function($spec) {
+    $spec->before(function($spec) {
+      $spec->tester = new Sphec\Tester(3, $spec->reporter);
+    });
+    
+    $spec->it('fails with same value and type', function($spec) {
+      $spec->tester->to_be_less_than(3);
+      $spec->expect($spec->reporter->passed)->to_be(0);
+      $spec->expect($spec->reporter->failed)->to_be(1);
+    });
+
+    $spec->it('fails with greater value and same type', function($spec) {
+      $spec->tester->to_be_less_than(2);
+      $spec->expect($spec->reporter->passed)->to_be(0);
+      $spec->expect($spec->reporter->failed)->to_be(1);
+    });
+
+    $spec->it('passes with lesser value and same type', function($spec) {
+      $spec->tester->to_be_less_than(4);
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('passes with lesser value and different type', function($spec) {
+      $spec->tester->to_be_less_than("4");
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+  });
+  
+  $spec->describe('to_be_less_than_or_equal', function($spec) {
+    $spec->before(function($spec) {
+      $spec->tester = new Sphec\Tester(3, $spec->reporter);
+    });
+    
+    $spec->it('passes with same value and type', function($spec) {
+      $spec->tester->to_be_less_than_or_equal(3);
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('fails with greater value and same type', function($spec) {
+      $spec->tester->to_be_less_than_or_equal(2);
+      $spec->expect($spec->reporter->passed)->to_be(0);
+      $spec->expect($spec->reporter->failed)->to_be(1);
+    });
+
+    $spec->it('passes with lesser value and same type', function($spec) {
+      $spec->tester->to_be_less_than_or_equal(4);
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('passes with lesser value and different type', function($spec) {
+      $spec->tester->to_be_less_than_or_equal("4");
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+  });
 });

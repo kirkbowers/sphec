@@ -52,4 +52,12 @@ Sphec\Sphec::specify('Failure', function($spec) {
   $spec->it('fails with ints and to_be_greater_than_or_equal', function($spec) {
     $spec->expect(3)->to_be_greater_than_or_equal(4);
   });
+
+  $spec->it('fails with ints and to_be_less_than', function($spec) {
+    $spec->expect(3)->to_be_less_than(2);
+  });
+
+  $spec->it('fails with ints and to_be_less_than_or_equal', function($spec) {
+    $spec->expect(3)->to_be_less_than_or_equal(2);
+  });
 });
