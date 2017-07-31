@@ -21,6 +21,14 @@ Sphec\Sphec::specify('Failure', function($spec) {
     $spec->expect(3)->to_equal(4);
   });
 
+  $spec->it('fails with ints to_not_be', function($spec) {
+    $spec->expect(3)->to_not_be(3);
+  });
+
+  $spec->it('fails with ints and string and to_not_equal', function($spec) {
+    $spec->expect(3)->to_not_equal("3");
+  });
+
   $spec->it('fails with false and to_be_true', function($spec) {
     $spec->expect(false)->to_be_true();
   });

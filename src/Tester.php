@@ -47,6 +47,24 @@ class Tester {
   }
 
   /**
+   * Tests against logical inequivalence (different value or different type) using !==
+   *
+   * @param $expected The expected value to be tested against.
+   */
+  public function to_not_be($expected) {
+    $this->report($this->value !== $expected, 'to not be equivalent to', $expected);
+  }
+
+  /**
+   * Tests against type coerced not equals (not the same value after type casting) using !=
+   *
+   * @param $expected The expected value to be tested against.
+   */
+  public function to_not_equal($expected) {
+    $this->report($this->value != $expected, 'to not equal', $expected);
+  }
+
+  /**
    * Tests that the computed value is strictly the boolean value true.
    *
    */
