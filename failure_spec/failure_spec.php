@@ -44,4 +44,8 @@ Sphec\Sphec::specify('Failure', function($spec) {
   $spec->it('fails with 1 and to_be_falsy', function($spec) {
     $spec->expect(1)->to_be_falsy();
   });
+
+  $spec->it('fails with ints and to_be_greater_than', function($spec) {
+    $spec->expect(3)->to_be_greater_than(4);
+  });
 });

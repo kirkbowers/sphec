@@ -130,4 +130,7 @@ Where `test` is one of the test methods listed below (some tests, like `to_be_fa
 
 `to_be_falsy()` passes if the computed value is false after type coercion.  In PHP a lot of values satisfy this condition, including false, null, 0, "0", array(), and an unset variable.
 
+`to_be_greater_than($expected)` passes if the computed value is strictly greater than the expected value (after type coercion).
+
+
 

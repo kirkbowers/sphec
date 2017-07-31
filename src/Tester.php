@@ -95,6 +95,15 @@ class Tester {
   public function to_be_falsy() {
     $this->report(! $this->value, 'to be falsy');
   }
+  
+  /**
+   * Tests against greater than using >
+   *
+   * @param $expected The expected value to be tested against.
+   */
+  public function to_be_greater_than($expected) {
+    $this->report($this->value > $expected, 'to be greater than', $expected);
+  }
 
   /**
    * Reports whether the test passed or failed.
