@@ -77,6 +77,24 @@ Here's what an example Sphec file looks like, with comments to point out some of
 
 Note that every anonymous function takes a parameter named `$spec`.  It can be named anything you like (except `$this`), but using `$spec` by convention is recommended.  The scope provided by the `$spec` variable will give access to the various commands that are available in that scope as well as any "local" member variables.
 
+## Running Sphec
+
+Sphec is a command line tool.  By default, it expects to be run in the root directory of a project, it expects all specs to be in a directory called `spec`, and it expects all spec files to end in the suffix `_spec.php`.  If those assumptions hold, you can simply run it on the command line:
+
+    sphec
+    
+This will show the output as a string of dots and/or F's for each test that passed or failed, followed by a summary:
+
+    $ sphec
+
+    ..............................................................................................................
+    Successes: 110, Failures: 0
+    Success!
+
+To see more verbose output showing the hierarchy of all contexts and examples run, use the `-v` flag.
+
+If you want to run only one particular spec file, pass the path to the file as an argument to `sphec`.  Likewise, if you want to only run the tests in a particular directory, pass the path to the directory and it will run all specs named *_spec.php in that and all subdirectories.
+
 ## Different scopes:  Context, Setup, and Example
 
 While inside a Sphec specification, there are three different types of scopes that you can be inside of:  context, setup and example.
@@ -138,5 +156,41 @@ Where `test` is one of the test methods listed below (some tests, like `to_be_fa
 
 `to_be_less_than_or_equal($expected)` passes if the computed value is less than or equal to the expected value (after type coercion).
 
+## Future Areas of Development
+
+Sphec is in its early stages of development and, although quite feature rich, has room to grow.  Here are some anticipated, or hoped for, future features.
+
+- Most interesting applications work with a database.  In the Rails ecosystem there are strong tools for setting up and populating a test database.  It would be nice to have similar capabilities in PHP-land, especially when working with WordPress.
+- Pending examples (using the `xit` command) would be nice.
+- Be able to test `to_throw_exception`.  The `expect` command could need to be able to take an anonymous function as an argument.
+- Be able to continue running tests after an error has occurred.  Currently, the program will simply bomb out.  RSpec will keep going and report an "E" for any test that has an error.
+
+## Contributing
+
+Sphec is totally open source and I welcome any help to flesh it out.  If you'd like to contribute, do the usual fork, create a branch off of `development`, do your thing then send me a pull request.
+
+### Testing
+
+Sphec tests itself!  Kinda' meta, eh?
+
+There are three ways to test Sphec if you are working on it.
+
+One, there are tests of Sphec's core functionality.  These tests go through a bit of gymnastics to unit test the inner workings, but they run directly off the root directory.  To run them, simply run:
+
+    sphec
+    
+Two, there are tests that all fail so that the failure messages can be visually inspected.  I'm of the strong mindset that any UI element, even if it is just printing to the console, must be visually inspected to make sure it looks as you'd expect.  To inspect the failure messages, run:
+
+    sphec failure_spec
+    
+Three, there is a test project that runs the latest `development` branch from github on a more conventional suite of tests (without going through the hoops necessary for Sphec to test itself).  To test them, run these steps from the project root:
+
+    cd test_project/
+    ./setup.sh 
+    ./sphec
+    
+You should see a "Success!" message.
+
+Enjoy!
 
 
