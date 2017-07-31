@@ -132,5 +132,7 @@ Where `test` is one of the test methods listed below (some tests, like `to_be_fa
 
 `to_be_greater_than($expected)` passes if the computed value is strictly greater than the expected value (after type coercion).
 
+`to_be_greater_than_or_equal($expected)` passes if the computed value is greater than or equal to the expected value (after type coercion).
+
 
 

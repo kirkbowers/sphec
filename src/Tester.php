@@ -104,6 +104,15 @@ class Tester {
   public function to_be_greater_than($expected) {
     $this->report($this->value > $expected, 'to be greater than', $expected);
   }
+  
+  /**
+   * Tests against greater than or equal using >=
+   *
+   * @param $expected The expected value to be tested against.
+   */
+  public function to_be_greater_than_or_equal($expected) {
+    $this->report($this->value >= $expected, 'to be greater than or equal', $expected);
+  }
 
   /**
    * Reports whether the test passed or failed.
