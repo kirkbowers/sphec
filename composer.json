@@ -14,5 +14,8 @@
     },
     "require": {
         "symfony/console": "v3.3.*"
-    }
+    },
+    "bin": [
+        "bin/sphec"
+    ]
 }

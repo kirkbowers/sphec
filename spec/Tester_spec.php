@@ -244,13 +244,6 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->expect($spec->reporter->passed)->to_be(1);
       $spec->expect($spec->reporter->failed)->to_be(0);
     });
-
-    $spec->it('passes with undefined', function($spec) {
-      $spec->tester = new Sphec\Tester($x, $spec->reporter);
-      $spec->tester->to_be_falsy();
-      $spec->expect($spec->reporter->passed)->to_be(1);
-      $spec->expect($spec->reporter->failed)->to_be(0);
-    });
   });
   
   $spec->describe('to_be_greater_than', function($spec) {

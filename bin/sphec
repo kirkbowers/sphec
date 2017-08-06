@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+
+<?php 
+
+require_once __DIR__ . '/../vendor/autoload.php'; 
+
+use Symfony\Component\Console\Application; 
+
+$version = '@package_version@';
+
+// This shouldn't ever be an issue if the executable is built into a phar with box,
+// but it is possible for composer to install the full source.
+if (('@' . 'package_version@') === $version) {
+  $version = '';
+}
+
+$app = new Application('Sphec', $version);
+
+$app->add(new Sphec\SphecCommand());
+
+$app->setDefaultCommand('sphec', true);
+
+$app->run();

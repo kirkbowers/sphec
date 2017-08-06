@@ -177,11 +177,11 @@ There are three ways to test Sphec if you are working on it.
 
 One, there are tests of Sphec's core functionality.  These tests go through a bit of gymnastics to unit test the inner workings, but they run directly off the root directory.  To run them, simply run:
 
-    sphec
+    bin/sphec
     
 Two, there are tests that all fail so that the failure messages can be visually inspected.  I'm of the strong mindset that any UI element, even if it is just printing to the console, must be visually inspected to make sure it looks as you'd expect.  To inspect the failure messages, run:
 
-    sphec failure_spec
+    bin/sphec failure_spec
     
 Three, there is a test project that runs the latest `development` branch from github on a more conventional suite of tests (without going through the hoops necessary for Sphec to test itself).  To test them, run these steps from the project root:
 
