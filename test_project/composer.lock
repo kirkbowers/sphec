@@ -12,17 +12,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kirkbowers/sphec.git",
-                "reference": "7712dace87b9b621cbf53a486ebf87002ccb3284"
+                "reference": "16cfdcc3faa2dec8350ca902b1fe7196379acbc1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kirkbowers/sphec/zipball/7712dace87b9b621cbf53a486ebf87002ccb3284",
-                "reference": "7712dace87b9b621cbf53a486ebf87002ccb3284",
+                "url": "https://api.github.com/repos/kirkbowers/sphec/zipball/16cfdcc3faa2dec8350ca902b1fe7196379acbc1",
+                "reference": "16cfdcc3faa2dec8350ca902b1fe7196379acbc1",
                 "shasum": ""
             },
             "require": {
                 "symfony/console": "v3.3.*"
             },
+            "bin": [
+                "bin/sphec"
+            ],
             "type": "project",
             "autoload": {
                 "psr-4": {
@@ -40,10 +43,10 @@
             ],
             "description": "A Behavior Driven Development (BDD) toolkit in PHP.",
             "support": {
-                "source": "https://github.com/kirkbowers/sphec/tree/v0.1.0",
+                "source": "https://github.com/kirkbowers/sphec/tree/development",
                 "issues": "https://github.com/kirkbowers/sphec/issues"
             },
-            "time": "2017-07-31T02:46:54+00:00"
+            "time": "2017-08-06T23:11:20+00:00"
         },
         {
             "name": "psr/log",

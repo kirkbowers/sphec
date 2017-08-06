@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 Sphec\Sphec::specify('Context', function($spec) {
   $spec->describe('before', function($spec) {
     $spec->it('executes before actions as expected', function($spec) {

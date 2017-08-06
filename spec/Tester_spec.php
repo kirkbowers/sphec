@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 Sphec\Sphec::specify('Tester', function($spec) {
   $spec->before(function($spec) {
     $spec->reporter = new Sphec\Reporter;

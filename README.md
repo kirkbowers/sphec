@@ -15,7 +15,9 @@ Since PHP does not have the notion of blocks like Ruby does, the syntax of Sphec
 Here's what an example Sphec file looks like, with comments to point out some of the features:
 
     <?php
-
+    
+    require_once __DIR__ . '/../vendor/autoload.php';
+    
     // Specify the behavior of a class
     Sphec\Sphec::specify('Accumulator', function($spec) {
 

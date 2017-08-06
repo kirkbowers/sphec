@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 // Specify the behavior of a class
 Sphec\Sphec::specify('Accumulator', function($spec) {
 
