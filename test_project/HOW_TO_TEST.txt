@@ -1,11 +1,11 @@
 This test_project directory is here to allow testing the command line script as a standalone.
 
-To test it out, type:
+To test it out, run:
 
-    ./setup.sh
+    composer update
     
 The run:
 
-    ./sphec
+    vendor/bin/sphec
     
 It should successfully run the suite of tests in the spec subdirectory.

@@ -79,6 +79,24 @@ Here's what an example Sphec file looks like, with comments to point out some of
 
 Note that every anonymous function takes a parameter named `$spec`.  It can be named anything you like (except `$this`), but using `$spec` by convention is recommended.  The scope provided by the `$spec` variable will give access to the various commands that are available in that scope as well as any "local" member variables.
 
+## Installing Sphec
+
+### From Packagist using composer
+
+The preferred way to install Sphec is with [Composer](https://getcomposer.org).  Assuming you have Composer installed, run:
+
+    composer global require kirkbowers/sphec
+    
+Then, assuming you have `$COMPOSER_HOME/vendor/bin` in your executable path, you should be good to go.
+
+### Manually from a phar file
+
+You can download the current version of Sphec as a phar archive [here](https://github.com/kirkbowers/sphec/releases/download/v0.1.1/sphec.phar).
+
+Then you can move/rename the file into a directory in your path (typically `/usr/local/bin`) dropping the `.phar` suffix:
+
+    mv sphec.phar /usr/local/bin/sphec
+
 ## Running Sphec
 
 Sphec is a command line tool.  By default, it expects to be run in the root directory of a project, it expects all specs to be in a directory called `spec`, and it expects all spec files to end in the suffix `_spec.php`.  If those assumptions hold, you can simply run it on the command line:
@@ -188,11 +206,9 @@ Two, there are tests that all fail so that the failure messages can be visually 
 Three, there is a test project that runs the latest `development` branch from github on a more conventional suite of tests (without going through the hoops necessary for Sphec to test itself).  To test them, run these steps from the project root:
 
     cd test_project/
-    ./setup.sh 
-    ./sphec
+    composer update 
+    vendor/bin/sphec
     
 You should see a "Success!" message.
 
 Enjoy!
-
-

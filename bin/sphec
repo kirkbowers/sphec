@@ -11,15 +11,8 @@ if (extension_loaded('phar') && ($uri = Phar::running())) {
 
 use Symfony\Component\Console\Application; 
 
-$version = '@package_version@';
 
-// This shouldn't ever be an issue if the executable is built into a phar with box,
-// but it is possible for composer to install the full source.
-if (('@' . 'package_version@') === $version) {
-  $version = '';
-}
-
-$app = new Application('Sphec', $version);
+$app = new Application('Sphec', 'v0.1.1');
 
 $app->add(new Sphec\SphecCommand());
 
