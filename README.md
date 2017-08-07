@@ -81,21 +81,11 @@ Note that every anonymous function takes a parameter named `$spec`.  It can be n
 
 ## Installing Sphec
 
-### From Packagist using composer
-
 The preferred way to install Sphec is with [Composer](https://getcomposer.org).  Assuming you have Composer installed, run:
 
     composer global require kirkbowers/sphec
     
 Then, assuming you have `$COMPOSER_HOME/vendor/bin` in your executable path, you should be good to go.
-
-### Manually from a phar file
-
-You can download the current version of Sphec as a phar archive [here](https://github.com/kirkbowers/sphec/releases/download/v0.1.1/sphec.phar).
-
-Then you can move/rename the file into a directory in your path (typically `/usr/local/bin`) dropping the `.phar` suffix:
-
-    mv sphec.phar /usr/local/bin/sphec
 
 ## Running Sphec
 
