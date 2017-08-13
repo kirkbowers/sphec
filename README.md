@@ -238,6 +238,48 @@ Where `test` is one of the test methods listed below (some tests, like `to_be_fa
         it uses a local var in an example
           expect(@foo)->to_be(3);
           
+## Scope is defined by indent level
+
+Much like Python and CoffeeScript, the scope of blocks in Sphec shorthand is controlled by the level of indentation.  For example, the two `context` blocks below are peers:
+
+    specify MyClass
+      describe some_method
+        before
+          @foo = 3
+        context in a certain situation
+          before
+            @bar = 0
+          it behaves a certain way
+            ...
+        context in a different situation
+          before
+            @bar = 42
+          it behaves differently
+
+Local variables go in and out of scope depending on the containing context.  In the above example, `@foo` is shared by both `context` blocks, but the two `context` blocks have their own unique copy of `@bar`.
+
+There are two notable exceptions to the rule about indenting.
+
+The inside of `before`, `after`, and `it` blocks is quasi-PHP.  That is, it's PHP with `@` local vars and `expect` commands that will be expanded by the Sphec parser.  If you need further inner scopes inside of these blocks, it should be handled by the usual PHP curly braces.  To make this concrete, if you need to declare an anonymous function to test for a raised exception, you can indent further inside your `it` block to style it nicely:
+
+        it might do something catastrophic
+          // Notice, the braces are needed, and the extra indent is legal
+          $myfunc = function() {
+            // Do something that might throw an exception
+          };
+          expect($myfunc)->to_throw('CatastrophicException');
+          
+The other exception is comments.  The indent level of comments are ignored, so it is legal to comment out sections by prepending the lines of code with double slashes or hashes.
+
+      context under certain circumstances
+        it does something
+          ...
+    //     it won't work!  This is pending.
+    //       ...
+
+        // We are still inside the "under certain circumstances" block
+        it does something else
+          ...
 
 ## Future Areas of Development
 
