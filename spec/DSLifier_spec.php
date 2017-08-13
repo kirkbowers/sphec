@@ -174,6 +174,75 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
+  
+    $spec->it('closes a specify and two sibling describes', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  describe my_method
+  describe other_method
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->describe('my_method', function(\$spec) {
+  });
+  \$spec->describe('other_method', function(\$spec) {
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
+  
+    $spec->it('closes a specify and embedded describes', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  describe my_method
+    describe other_method
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->describe('my_method', function(\$spec) {
+    \$spec->describe('other_method', function(\$spec) {
+    });
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
+  
+    $spec->it('closes a specify and embedded describes and contexts', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  describe my_method
+    context interesting situation
+    context other situation
+  describe other_method
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->describe('my_method', function(\$spec) {
+    \$spec->context('interesting situation', function(\$spec) {
+    });
+    \$spec->context('other situation', function(\$spec) {
+    });
+  });
+  \$spec->describe('other_method', function(\$spec) {
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
   });  
 });
     

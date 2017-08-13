@@ -81,11 +81,11 @@ class DSLifier {
       $this->result .= $this_indent . "});\n";
     
       $compare = $this->compare_indent($indent);  
-    } while (($compare > 0) && !empty($this->stack));
+    } while (($compare <= 0) && !empty($this->stack));
   }
 
   private function current_indent() {
-    end($this->stack);
+    return array_slice($this->stack, -1)[0];
   }  
   
   private function compare_indent($indent) {
@@ -113,6 +113,7 @@ class DSLifier {
         }
       } else {
         $this->close_indents($indent);
+        $this->advance_indent($indent);
       }
       
       $this->new_scope = true;
@@ -147,6 +148,9 @@ class DSLifier {
         } else if ($matches = $this->matches_command('describe', $command)) {
           $this->handle_indent($this_indent);
           $this->result .= $this_indent . $this->process_describe_command($matches) . "\n";
+        } else if ($matches = $this->matches_command('context', $command)) {
+          $this->handle_indent($this_indent);
+          $this->result .= $this_indent . $this->process_context_command($matches) . "\n";
         } else {
           $this->result .= "$line\n";
         }
