@@ -123,6 +123,23 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
       $spec->expect($result)->to_be($expected);
     });
   });
+
+
+  $spec->describe('process_local_vars', function($spec) {
+    $spec->it('converts one local var', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $result = $dsl->process_local_vars('@foo = 1;');
+      $expected = "\$spec->foo = 1;";
+      $spec->expect($result)->to_be($expected);
+    });
+
+    $spec->it('converts two local vars', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $result = $dsl->process_local_vars('@foo = @blech + 1;');
+      $expected = "\$spec->foo = \$spec->blech + 1;";
+      $spec->expect($result)->to_be($expected);
+    });
+  });
   
   
   
@@ -283,19 +300,19 @@ EOF;
       $input = <<<EOF
 specify MyClass
   before
-    \$foo = 3;
+    @foo = 3;
   it does that thing
-    \$foo = 1;
+    @foo = 1;
     \$blech = 2;
 EOF;
 
       $output = <<<EOF
 Sphec\\Sphec::specify('MyClass', function(\$spec) {
   \$spec->before(function(\$spec) {
-    \$foo = 3;
+    \$spec->foo = 3;
   });
   \$spec->it('does that thing', function(\$spec) {
-    \$foo = 1;
+    \$spec->foo = 1;
     \$blech = 2;
   });
 });
@@ -310,19 +327,19 @@ EOF;
       $input = <<<EOF
 specify MyClass
   after
-    \$foo = 3;
+    @foo = 3;
   it does that thing
-    \$foo = 1;
+    @foo = 1;
     \$blech = 2;
 EOF;
 
       $output = <<<EOF
 Sphec\\Sphec::specify('MyClass', function(\$spec) {
   \$spec->after(function(\$spec) {
-    \$foo = 3;
+    \$spec->foo = 3;
   });
   \$spec->it('does that thing', function(\$spec) {
-    \$foo = 1;
+    \$spec->foo = 1;
     \$blech = 2;
   });
 });

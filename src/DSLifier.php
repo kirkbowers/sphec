@@ -69,6 +69,9 @@ class DSLifier {
     return "\$spec->after(function(\$spec) {";
   }
   
+  public function process_local_vars($line) {
+    return preg_replace('/@(\w+)/', "\$spec->$1", $line);
+  }
   
   private function advance_indent($this_indent) {
     array_push($this->stack, $this_indent);
@@ -179,7 +182,7 @@ class DSLifier {
           $this->result .= $this_indent . $this->process_after_command($matches) . "\n";
         } else {
           $this->handle_indent($this_indent, false);
-          $this->result .= $this_indent . "$command\n";
+          $this->result .= $this_indent . $this->process_local_vars($command) . "\n";
         }
       
       }
