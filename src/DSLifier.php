@@ -122,7 +122,6 @@ class DSLifier {
       $this->new_scope = true;
     } else {
       if ($this->new_scope) {
-        echo "Compare = $compare\n";
         if ($compare <= 0) {
           $this->throw_bad_indent();
         } else {
@@ -139,7 +138,6 @@ class DSLifier {
   }
   
   private function throw_bad_indent() {
-    echo "Throwing bad indent\n";
     throw new BadIndentException();
   }
   
