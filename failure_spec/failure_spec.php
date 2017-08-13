@@ -60,4 +60,8 @@ Sphec\Sphec::specify('Failure', function($spec) {
   $spec->it('fails with ints and to_be_less_than_or_equal', function($spec) {
     $spec->expect(3)->to_be_less_than_or_equal(2);
   });
+
+  $spec->it('fails with no error and to_throw', function($spec) {
+    $spec->expect(function() {})->to_throw("Exception");
+  });
 });

@@ -77,7 +77,11 @@ class Reporter {
       foreach ($this->failures as $failure) {
         $this->output->writeln("<fg=red>Failed:</fg=red> " . $failure['label']);
         $this->output->writeln("Computed:");
-        $this->output->writeln(var_export($failure['computed'], true));
+        if (is_callable($failure['computed'])) {
+          $this->output->writeln('function');
+        } else {
+          $this->output->writeln(var_export($failure['computed'], true));
+        }
         $this->output->write("Expected " . $failure['test']);
         if (isset($failure['expected'])) {
           $this->output->writeln(':');
