@@ -52,11 +52,13 @@ class SphecCommand extends Command {
         // It's a file.  Trust that it must have a suffix.  If not, we can probably
         // discard it.
         preg_match('/\.(\w+)$/', $folder, $matches);
-        $suffix = $matches[1];
-        if ($suffix == 'php') {
-          $php_files[] = $folder;
-        } else if ($suffix == 'sphec') {
-          $shorthand_files[] = $folder;
+        if (isset($matches[1])) {
+          $suffix = $matches[1];
+          if ($suffix == 'php') {
+            $php_files[] = $folder;
+          } else if ($suffix == 'sphec') {
+            $shorthand_files[] = $folder;
+          }
         }
       }
     }
