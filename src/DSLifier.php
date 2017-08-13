@@ -12,6 +12,7 @@ class DSLifier {
   function __construct($input, $filename = "") {
     $this->input = $input;
     $this->filename = $filename;
+    $this->dirname = dirname($this->filename);
     $this->current_indent = '';
   }
 
@@ -71,7 +72,11 @@ class DSLifier {
   }
   
   public function process_local_vars($line) {
-    return preg_replace('/@(\w+)/', "\$spec->$1", $line);
+    $result = preg_replace('/@(\w+)/', "\$spec->$1", $line);
+    $result = preg_replace('/__DIR__/', "'$this->dirname'", $result);
+    $result = preg_replace('/__FILE__/', "'$this->filename'", $result);
+    
+    return $result;
   }
 
   public function matches_expect($line) {

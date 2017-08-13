@@ -9,3 +9,5 @@ The run:
     vendor/bin/sphec
     
 It should successfully run the suite of tests in the spec subdirectory.
+
+There are two files there, one in the brute force PHP format, and one in the shorthand sphec notation.  This test proves that both will be loaded automatically, what type of file it is is detected by the suffix, and sphec does the right thing accordingly.
