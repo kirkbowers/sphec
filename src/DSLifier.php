@@ -146,7 +146,7 @@ class DSLifier {
           $this->current_indent = $indent;        
         }
       } else {
-        if ($compare != 0) {
+        if ($compare < 0) {
           $this->throw_bad_indent();
         }
       }

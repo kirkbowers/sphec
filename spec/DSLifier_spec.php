@@ -370,6 +370,78 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
+  
+    $spec->it('allows uneven indents inside before and it blocks', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  before
+    @foo =
+      3;
+    @blech = 2;
+  it does that thing
+    expect(function() {
+      throw new Exception;
+    })->to_throw('Exception');
+
+    expect(@foo - 1)->to_be(@blech);
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->before(function(\$spec) {
+    \$spec->foo =
+      3;
+    \$spec->blech = 2;
+  });
+  \$spec->it('does that thing', function(\$spec) {
+    \$spec->expect(function() {
+      throw new Exception;
+    })->to_throw('Exception');
+
+    \$spec->expect(\$spec->foo - 1)->to_be(\$spec->blech);
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
+  
+    $spec->it('allows comments at the beginning of the line', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  before
+    @foo = 3;
+    @blech = 2;
+  it does that thing
+//     expect(function() {
+//       throw new Exception;
+//     })->to_throw('Exception');
+
+    expect(@foo - 1)->to_be(@blech);
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->before(function(\$spec) {
+    \$spec->foo = 3;
+    \$spec->blech = 2;
+  });
+  \$spec->it('does that thing', function(\$spec) {
+//     expect(function() {
+//       throw new Exception;
+//     })->to_throw('Exception');
+
+    \$spec->expect(\$spec->foo - 1)->to_be(\$spec->blech);
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
   });  
 });
     
