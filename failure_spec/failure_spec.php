@@ -64,4 +64,8 @@ Sphec\Sphec::specify('Failure', function($spec) {
   $spec->it('fails with no error and to_throw', function($spec) {
     $spec->expect(function() {})->to_throw("Exception");
   });
+
+  $spec->it('fails with an error and not_to_throw', function($spec) {
+    $spec->expect(function() { throw new Exception(); })->not_to_throw();
+  });
 });

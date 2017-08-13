@@ -390,4 +390,20 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->expect($spec->reporter->failed)->to_be(1);
     });  
   });
+  
+  $spec->describe('not_to_throw', function($spec) {
+    $spec->it('passes when nothing is thrown', function($spec) {
+      $spec->tester = new Sphec\Tester(function () { }, $spec->reporter);
+      $spec->tester->not_to_throw();
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('fails when it does throw something', function($spec) {
+      $spec->tester = new Sphec\Tester(function() { throw new OutOfRangeException; }, $spec->reporter);
+      $spec->tester->not_to_throw();
+      $spec->expect($spec->reporter->passed)->to_be(0);
+      $spec->expect($spec->reporter->failed)->to_be(1);
+    });  
+  });
 });

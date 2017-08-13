@@ -133,6 +133,26 @@ class Tester {
   }
   
   /**
+   * Tests whether the supplied function doesn't throw any exception.
+   *
+   */
+  public function not_to_throw() {
+    $result = true;
+    $name = '';
+    
+    if (is_callable($this->value)) {
+      try {
+        $this->value->__invoke();
+      } catch (\Exception $e) {
+        $result = false;
+        $name = get_class($e);
+      }
+    }
+  
+    $this->report($result, 'not to throw but threw', $name);
+  }
+  
+  /**
    * Tests whether the supplied function throws the expected exception.
    *
    * @param $expected The name of the expected exception as a string.
