@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Specify the behavior of a class
-Sphec\Sphec::specify('Accumulator', function($spec) {
+Sphec\Sphec::specify('TestProject\Accumulator', function($spec) {
 
   // Describe how a method of that class is expected to behave
   $spec->describe('add', function($spec) {

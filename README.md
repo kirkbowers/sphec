@@ -3,9 +3,9 @@ A Behavior-Driven Development (BDD) toolkit in PHP.
 
 ## Introduction
 
-Sphec is a Behavior-Driven Development (BDD) toolkit for PHP that is largely inspired by [RSpec](http://rspec.info/) and [Jasmine](https://jasmine.github.io/).  The name is somewhat of a contraction of "spec" and "PHP".  It provides a domain specific language (DSL) in PHP for describing how a part of your software should behave and writing tests to ensure it does, in fact, behave that way.
+Sphec is a Behavior-Driven Development (BDD) toolkit for PHP that is largely inspired by [RSpec](http://rspec.info/), [Jasmine](https://jasmine.github.io/), and to a degree by [Cucumber](https://cucumber.io/).  The name is somewhat of a contraction of "spec" and "PHP".  It provides a domain specific language (DSL) that is a mixture of natural language shorthand and quasi-PHP for describing how a part of your software should behave and writing tests to ensure it does, in fact, behave that way.
 
-Since PHP does not have the notion of blocks like Ruby does, the syntax of Sphec is not as concise or elegant as RSpec's.  A lot has to be done with anonymous functions that are passed the working scope as a parameter.  But, once you get past that bit of extra verbosity, it provides a great many of the same features, including:
+Some features are:
 
 - Hierarchical contexts for grouping related tests and setting up different pre-test conditions.
 - `before` and `after` actions to set up and tear down pre-test conditions.
@@ -14,12 +14,67 @@ Since PHP does not have the notion of blocks like Ruby does, the syntax of Sphec
 
 Here's what an example Sphec file looks like, with comments to point out some of the features:
 
+    require_once __DIR__ . '/../vendor/autoload.php';
+
+    // Specify the behavior of a class
+    specify TestProject\Accumulator
+
+      // Describe how a method of that class is expected to behave
+      describe add
+
+        // Set up a subcontext with pre-test conditions shared by multiple examples.
+        context with default starting value
+    
+          // Set up those pre-test conditions in a before action
+          before
+            // "Local" variables to be shared by blocks within a context are declared
+            // using the @ symbol
+            @accumulator = new TestProject\Accumulator;
+      
+          // Provide examples of what the expected behavior is.
+          it should start with a zero value
+            // Note, the "local" member variable accumulator that was create in `before` is
+            // available inside the examples.
+        
+            // Write tests as expectations.
+            expect(@accumulator->get_value())->to_be(0);
+      
+          it should accumulate a single value
+            @accumulator->add(3);
+            expect(@accumulator->get_value())->to_be(3);
+      
+          it should accumulate more than one value
+            @accumulator->add(3);
+            @accumulator->add(5);
+            expect(@accumulator->get_value())->to_be(8);
+
+        // Set up a different context with different pre-test conditions.
+        context with supplied starting value
+          before
+            @accumulator = new TestProject\Accumulator(2);
+      
+          it should start with a zero value
+            expect(@accumulator->get_value())->to_be(2);
+      
+          it should accumulate a single value
+            @accumulator->add(3);
+            expect(@accumulator->get_value())->to_be(5);
+      
+          it should accumulate more than one value
+            @accumulator->add(3);
+            @accumulator->add(5);
+            expect(@accumulator->get_value())->to_be(10);
+
+Under the hood, this gets converted to PHP and then eval'd.  Since PHP does not have the notion of blocks like Ruby does, a lot has to be done with anonymous functions that are passed the working scope as a parameter.  If you don't mind working with that bit of extra verbosity, you can write your Sphec specs in straight PHP.
+
+Here's what the above sphec shorthand gets converted into in actual PHP:
+
     <?php
     
     require_once __DIR__ . '/../vendor/autoload.php';
     
     // Specify the behavior of a class
-    Sphec\Sphec::specify('Accumulator', function($spec) {
+    Sphec\Sphec::specify('TestProject\Accumulator', function($spec) {
 
       // Describe how a method of that class is expected to behave
       $spec->describe('add', function($spec) {
@@ -89,7 +144,11 @@ Then, assuming you have `$COMPOSER_HOME/vendor/bin` in your executable path, you
 
 ## Running Sphec
 
-Sphec is a command line tool.  By default, it expects to be run in the root directory of a project, it expects all specs to be in a directory called `spec`, and it expects all spec files to end in the suffix `_spec.php`.  If those assumptions hold, you can simply run it on the command line:
+Sphec is a command line tool.  By default, it expects to be run in the root directory of a project, it expects all specs to be in a directory called `spec`, and it expects all spec files to end in either the suffix `_spec.sphec` or `_spec.php`.  
+
+Files ending with the suffix `.sphec` will be treated as Sphec shorthand and will be converted to PHP before being run.  Files ending with `.php` will be run as is.
+
+If those assumptions hold, you can simply run it on the command line:
 
     sphec
     
@@ -103,7 +162,7 @@ This will show the output as a string of dots and/or F's for each test that pass
 
 To see more verbose output showing the hierarchy of all contexts and examples run, use the `-v` flag.
 
-If you want to run only one particular spec file, pass the path to the file as an argument to `sphec`.  Likewise, if you want to only run the tests in a particular directory, pass the path to the directory and it will run all specs named *_spec.php in that and all subdirectories.
+If you want to run only one particular spec file, pass the path to the file as an argument to `sphec`.  Likewise, if you want to only run the tests in a particular directory, pass the path to the directory and it will run all specs named `*_spec.sphec` and `*_spec.php` in that and all subdirectories.
 
 ## Different scopes:  Context, Setup, and Example
 
@@ -114,11 +173,11 @@ While inside a Sphec specification, there are three different types of scopes th
 You are in a context scope whenever you are just inside a `specify`, `describe`, or `context` block.  Context blocks are executed immediately in order to build the tree of
 subcontexts and examples.  The available commands inside of a context scope are:
 
-- `describe($label, $block)`
-- `context($label, $block)`
-- `before($block)`
-- `after($block)`
-- `it($label, $block)`
+- `describe $label`
+- `context $label`
+- `before`
+- `after`
+- `it $label`
 
 Local member variables are not available inside of a context scope block.
 
@@ -134,7 +193,7 @@ You are in an example scope whenever you are inside an `it` block.  Example bloc
 
 Tests are performed inside of examples by stating expectations.  An expectation always takes this form:
 
-      $spec->expect($computed)->test($expected);
+      expect($computed)->test($expected);
       
 Where `test` is one of the test methods listed below (some tests, like `to_be_falsey`, do not take an `$expected` parameter).  Execution will continue after any expectations that fail, with all the failures gathered up and reported on the console after all tests have been performed.
 
@@ -169,6 +228,16 @@ Where `test` is one of the test methods listed below (some tests, like `to_be_fa
 `to_throw($expected)` passes if the anonymous function passed to `expect` throws the expected exception (or a subclass) when executed.  This one works a little different than the above tests.  `expect` must be passed an anonymous function that takes no parameters.  `$expected` is the name of an expected exception as a string.
 
 `not_to_throw()` passes if the anonymous function passed to `expect` executes without throwing any exceptions.  `expect` must be passed an anonymous function that takes no parameters.
+
+## Local variables
+
+"Local" variables can be declared in `before` and `after` blocks and consumed inside `it` examples.  The shorthand for a local variable the at sign (`@`) followed by a variable name.  So, assuming you are inside a context, this works:
+
+        before
+          @foo = 3;
+        it uses a local var in an example
+          expect(@foo)->to_be(3);
+          
 
 ## Future Areas of Development
 

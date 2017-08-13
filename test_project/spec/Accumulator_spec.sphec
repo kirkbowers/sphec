@@ -1,7 +1,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Specify the behavior of a class
-specify Accumulator
+specify TestProject\Accumulator
 
   // Describe how a method of that class is expected to behave
   describe add

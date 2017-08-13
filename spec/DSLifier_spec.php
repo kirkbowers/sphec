@@ -51,11 +51,11 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
   });
 
 
-  $spec->describe('process_specify_command', function($spec) {
+  $spec->describe('process_command', function($spec) {
     $spec->it('converts a specify with a simple string', function($spec) {
       $dsl = new Sphec\DSLifier('');
       $matches = $dsl->matches_command('specify', 'specify MyClass');
-      $result = $dsl->process_specify_command($matches);
+      $result = $dsl->process_command($matches, "Sphec\\Sphec::specify");
       $expected = "Sphec\\Sphec::specify('MyClass', function(\$spec) {";
       $spec->expect($result)->to_be($expected);
     });
@@ -63,63 +63,27 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
     $spec->it('converts a specify with a single quote', function($spec) {
       $dsl = new Sphec\DSLifier('');
       $matches = $dsl->matches_command('specify', "specify can't touch this");
-      $result = $dsl->process_specify_command($matches);
+      $result = $dsl->process_command($matches, "Sphec\\Sphec::specify");
       $expected = "Sphec\\Sphec::specify('can\\'t touch this', function(\$spec) {";
       $spec->expect($result)->to_be($expected);
     });
-  });
 
-
-  $spec->describe('process_describe_command', function($spec) {
     $spec->it('converts a describe with a simple string', function($spec) {
       $dsl = new Sphec\DSLifier('');
       $matches = $dsl->matches_command('describe', 'describe my_method');
-      $result = $dsl->process_describe_command($matches);
+      $result = $dsl->process_command($matches, "\$spec->describe");
       $expected = "\$spec->describe('my_method', function(\$spec) {";
       $spec->expect($result)->to_be($expected);
     });
   });
 
 
-  $spec->describe('process_context_command', function($spec) {
-    $spec->it('converts a context with a simple string', function($spec) {
-      $dsl = new Sphec\DSLifier('');
-      $matches = $dsl->matches_command('context', 'context when something interesting happens');
-      $result = $dsl->process_context_command($matches);
-      $expected = "\$spec->context('when something interesting happens', function(\$spec) {";
-      $spec->expect($result)->to_be($expected);
-    });
-  });
-
-
-  $spec->describe('process_it_command', function($spec) {
-    $spec->it('converts an it with a simple string', function($spec) {
-      $dsl = new Sphec\DSLifier('');
-      $matches = $dsl->matches_command('it', 'it does what I expect');
-      $result = $dsl->process_it_command($matches);
-      $expected = "\$spec->it('does what I expect', function(\$spec) {";
-      $spec->expect($result)->to_be($expected);
-    });
-  });
-
-
-  $spec->describe('process_before_command', function($spec) {
+  $spec->describe('process_simple_command', function($spec) {
     $spec->it('converts a before', function($spec) {
       $dsl = new Sphec\DSLifier('');
       $matches = $dsl->matches_simple_command('before', 'before');
-      $result = $dsl->process_before_command($matches);
+      $result = $dsl->process_simple_command($matches, "\$spec->before");
       $expected = "\$spec->before(function(\$spec) {";
-      $spec->expect($result)->to_be($expected);
-    });
-  });
-
-
-  $spec->describe('process_after_command', function($spec) {
-    $spec->it('converts an after', function($spec) {
-      $dsl = new Sphec\DSLifier('');
-      $matches = $dsl->matches_simple_command('after', 'after    ');
-      $result = $dsl->process_after_command($matches);
-      $expected = "\$spec->after(function(\$spec) {";
       $spec->expect($result)->to_be($expected);
     });
   });

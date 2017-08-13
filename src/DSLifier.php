@@ -43,34 +43,15 @@ class DSLifier {
     return false;  
   }
   
-  public function process_specify_command($matches) {
-    return "Sphec\\Sphec::specify('" . str_replace("'", "\\'", $matches[1]) . 
-      "', function(\$spec) {";
+  public function process_command($matches, $replacement) {
+    return $replacement . "('" . str_replace("'", "\\'", $matches[1]) . 
+      "', function(\$spec) {";  
   }
   
-  public function process_describe_command($matches) {
-    return "\$spec->describe('" . str_replace("'", "\\'", $matches[1]) . 
-      "', function(\$spec) {";
+  public function process_simple_command($matches, $replacement) {
+    return $replacement . "(function(\$spec) {";  
   }
-  
-  public function process_context_command($matches) {
-    return "\$spec->context('" . str_replace("'", "\\'", $matches[1]) . 
-      "', function(\$spec) {";
-  }
-  
-  public function process_it_command($matches) {
-    return "\$spec->it('" . str_replace("'", "\\'", $matches[1]) . 
-      "', function(\$spec) {";
-  }
-  
-  public function process_before_command($matches) {
-    return "\$spec->before(function(\$spec) {";
-  }
-  
-  public function process_after_command($matches) {
-    return "\$spec->after(function(\$spec) {";
-  }
-  
+    
   public function process_local_vars($line) {
     $result = preg_replace('/@(\w+)/', "\$spec->$1", $line);
     $result = preg_replace('/__DIR__/', "'$this->dirname'", $result);
@@ -118,7 +99,6 @@ class DSLifier {
     $current_indent = $this->current_indent();
     $indent_len = strlen($indent);
     $current_len = strlen($current_indent);
-    // echo "$indent_len $current_len\n";
     if ($indent_len < $current_len) {
       return -1;
     } else if ($indent_len > $current_len) {
@@ -184,23 +164,29 @@ class DSLifier {
         $command = $matches[2];
         
         if ($matches = $this->matches_command('specify', $command)) {
-          $this->result .= $this_indent . $this->process_specify_command($matches) . "\n";
+          $this->result .= $this_indent . 
+            $this->process_command($matches, "Sphec\\Sphec::specify") . "\n";
           $this->advance_indent($this_indent);
         } else if ($matches = $this->matches_command('describe', $command)) {
           $this->handle_indent($this_indent);
-          $this->result .= $this_indent . $this->process_describe_command($matches) . "\n";
+          $this->result .= $this_indent . 
+            $this->process_command($matches, "\$spec->describe") . "\n";
         } else if ($matches = $this->matches_command('context', $command)) {
           $this->handle_indent($this_indent);
-          $this->result .= $this_indent . $this->process_context_command($matches) . "\n";
+          $this->result .= $this_indent . 
+            $this->process_command($matches, "\$spec->context") . "\n";
         } else if ($matches = $this->matches_command('it', $command)) {
           $this->handle_indent($this_indent);
-          $this->result .= $this_indent . $this->process_it_command($matches) . "\n";
+          $this->result .= $this_indent . 
+            $this->process_command($matches, "\$spec->it") . "\n";
         } else if ($matches = $this->matches_simple_command('before', $command)) {
           $this->handle_indent($this_indent);
-          $this->result .= $this_indent . $this->process_before_command($matches) . "\n";
+          $this->result .= $this_indent . 
+            $this->process_simple_command($matches, "\$spec->before") . "\n";
         } else if ($matches = $this->matches_simple_command('after', $command)) {
           $this->handle_indent($this_indent);
-          $this->result .= $this_indent . $this->process_after_command($matches) . "\n";
+          $this->result .= $this_indent . 
+            $this->process_simple_command($matches, "\$spec->after") . "\n";
         } else if ($matches = $this->matches_expect($command)) {
           $this->handle_indent($this_indent, false);
           $this->result .= $this_indent . $this->process_expect($matches) . "\n";
