@@ -73,6 +73,7 @@ class DSLifier {
   private function advance_indent($this_indent) {
     array_push($this->stack, $this_indent);
     $this->new_scope = true;  
+    $this->current_indent = $this_indent;
   }
   
   private function close_indents($indent) {
@@ -80,18 +81,20 @@ class DSLifier {
       $this_indent = array_pop($this->stack);
       $this->result .= $this_indent . "});\n";
     
+      $this->current_indent = array_slice($this->stack, -1)[0];
       $compare = $this->compare_indent($indent);  
     } while (($compare <= 0) && !empty($this->stack));
   }
 
   private function current_indent() {
-    return array_slice($this->stack, -1)[0];
+    return $this->current_indent;
   }  
   
   private function compare_indent($indent) {
     $current_indent = $this->current_indent();
     $indent_len = strlen($indent);
     $current_len = strlen($current_indent);
+    // echo "$indent_len $current_len\n";
     if ($indent_len < $current_len) {
       return -1;
     } else if ($indent_len > $current_len) {
@@ -117,10 +120,26 @@ class DSLifier {
       }
       
       $this->new_scope = true;
+    } else {
+      if ($this->new_scope) {
+        echo "Compare = $compare\n";
+        if ($compare <= 0) {
+          $this->throw_bad_indent();
+        } else {
+          $this->current_indent = $indent;        
+        }
+      } else {
+        if ($compare != 0) {
+          $this->throw_bad_indent();
+        }
+      }
+      
+      $this->new_scope = false;
     }
   }
   
   private function throw_bad_indent() {
+    echo "Throwing bad indent\n";
     throw new BadIndentException();
   }
   
@@ -138,7 +157,7 @@ class DSLifier {
         $this->result .= $line . "\n";
       } else {
         // Split for indentation
-        preg_match('/^(\s*)(\b.*)$/', $line, $matches);
+        preg_match('/^(\s*)(\S.*)$/', $line, $matches);
         $this_indent = $matches[1];
         $command = $matches[2];
         
@@ -151,8 +170,18 @@ class DSLifier {
         } else if ($matches = $this->matches_command('context', $command)) {
           $this->handle_indent($this_indent);
           $this->result .= $this_indent . $this->process_context_command($matches) . "\n";
+        } else if ($matches = $this->matches_command('it', $command)) {
+          $this->handle_indent($this_indent);
+          $this->result .= $this_indent . $this->process_it_command($matches) . "\n";
+        } else if ($matches = $this->matches_simple_command('before', $command)) {
+          $this->handle_indent($this_indent);
+          $this->result .= $this_indent . $this->process_before_command($matches) . "\n";
+        } else if ($matches = $this->matches_simple_command('after', $command)) {
+          $this->handle_indent($this_indent);
+          $this->result .= $this_indent . $this->process_after_command($matches) . "\n";
         } else {
-          $this->result .= "$line\n";
+          $this->handle_indent($this_indent, false);
+          $this->result .= $this_indent . "$command\n";
         }
       
       }

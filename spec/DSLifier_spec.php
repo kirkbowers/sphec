@@ -243,6 +243,95 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
+  
+    $spec->it('closes a specify and an it', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  it does that thing
+    \$foo = 1;
+    \$blech = 2;
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->it('does that thing', function(\$spec) {
+    \$foo = 1;
+    \$blech = 2;
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
+
+    $spec->it('throws with a bad indent after an it', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  it does that thing
+  \$foo = 1;
+    \$blech = 2;
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $block = function() use ($dsl) { $dsl->get_php(); };
+      $spec->expect($block)->to_throw('Sphec\BadIndentException');
+    });
+  
+    $spec->it('closes a specify and a before and it', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  before
+    \$foo = 3;
+  it does that thing
+    \$foo = 1;
+    \$blech = 2;
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->before(function(\$spec) {
+    \$foo = 3;
+  });
+  \$spec->it('does that thing', function(\$spec) {
+    \$foo = 1;
+    \$blech = 2;
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
+  
+    $spec->it('closes a specify and an after and it', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  after
+    \$foo = 3;
+  it does that thing
+    \$foo = 1;
+    \$blech = 2;
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->after(function(\$spec) {
+    \$foo = 3;
+  });
+  \$spec->it('does that thing', function(\$spec) {
+    \$foo = 1;
+    \$blech = 2;
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
   });  
 });
     

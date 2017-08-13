@@ -1,6 +1,6 @@
 <?php
 namespace Sphec;
 
-class BadIndentException extends Exception {
+class BadIndentException extends \Exception {
 
 }
