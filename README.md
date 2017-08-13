@@ -166,13 +166,16 @@ Where `test` is one of the test methods listed below (some tests, like `to_be_fa
 
 `to_be_less_than_or_equal($expected)` passes if the computed value is less than or equal to the expected value (after type coercion).
 
+`to_throw($expected)` passes if the anonymous function passed to `expect` throws the expected exception (or a subclass) when executed.  This one works a little different than the above tests.  `expect` must be passed an anonymous function that takes no parameters.  `$expected` is the name of an expected exception as a string.
+
+`not_to_throw()` passes if the anonymous function passed to `expect` executes without throwing any exceptions.  `expect` must be passed an anonymous function that takes no parameters.
+
 ## Future Areas of Development
 
 Sphec is in its early stages of development and, although quite feature rich, has room to grow.  Here are some anticipated, or hoped for, future features.
 
 - Most interesting applications work with a database.  In the Rails ecosystem there are strong tools for setting up and populating a test database.  It would be nice to have similar capabilities in PHP-land, especially when working with WordPress.
 - Pending examples (using the `xit` command) would be nice.
-- Be able to test `to_throw_exception`.  The `expect` command could need to be able to take an anonymous function as an argument.
 - Be able to continue running tests after an error has occurred.  Currently, the program will simply bomb out.  RSpec will keep going and report an "E" for any test that has an error.
 
 ## Contributing
