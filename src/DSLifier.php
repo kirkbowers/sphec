@@ -72,6 +72,21 @@ class DSLifier {
   public function process_local_vars($line) {
     return preg_replace('/@(\w+)/', "\$spec->$1", $line);
   }
+
+  public function matches_expect($line) {
+    if (preg_match('/^expect\s*\((.*)$/', $line, $matches)) {
+      return $matches;
+    }  
+    return false;  
+  }
+
+  public function process_expect($matches) {
+    $result = "\$spec->expect(" . $matches[1];
+    return $this->process_local_vars($result);
+  }
+
+
+
   
   private function advance_indent($this_indent) {
     array_push($this->stack, $this_indent);
@@ -180,6 +195,9 @@ class DSLifier {
         } else if ($matches = $this->matches_simple_command('after', $command)) {
           $this->handle_indent($this_indent);
           $this->result .= $this_indent . $this->process_after_command($matches) . "\n";
+        } else if ($matches = $this->matches_expect($command)) {
+          $this->handle_indent($this_indent, false);
+          $this->result .= $this_indent . $this->process_expect($matches) . "\n";
         } else {
           $this->handle_indent($this_indent, false);
           $this->result .= $this_indent . $this->process_local_vars($command) . "\n";

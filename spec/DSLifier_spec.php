@@ -140,6 +140,25 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
       $spec->expect($result)->to_be($expected);
     });
   });
+
+
+  $spec->describe('process_expect', function($spec) {
+    $spec->it('convert simple expect', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $matches = $dsl->matches_expect('expect($foo)->to_be(1);');
+      $result = $dsl->process_expect($matches);
+      $expected = "\$spec->expect(\$foo)->to_be(1);";
+      $spec->expect($result)->to_be($expected);
+    });
+
+    $spec->it('convert expect with local vars', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $matches = $dsl->matches_expect('expect(@foo + 1)->to_be(@blech);');
+      $result = $dsl->process_expect($matches);
+      $expected = "\$spec->expect(\$spec->foo + 1)->to_be(\$spec->blech);";
+      $spec->expect($result)->to_be($expected);
+    });
+  });
   
   
   
@@ -331,6 +350,7 @@ specify MyClass
   it does that thing
     @foo = 1;
     \$blech = 2;
+    expect(@foo + \$blech)->to_be(3);
 EOF;
 
       $output = <<<EOF
@@ -341,6 +361,7 @@ Sphec\\Sphec::specify('MyClass', function(\$spec) {
   \$spec->it('does that thing', function(\$spec) {
     \$spec->foo = 1;
     \$blech = 2;
+    \$spec->expect(\$spec->foo + \$blech)->to_be(3);
   });
 });
 
