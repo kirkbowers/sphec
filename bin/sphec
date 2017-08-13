@@ -12,7 +12,7 @@ if (extension_loaded('phar') && ($uri = Phar::running())) {
 use Symfony\Component\Console\Application; 
 
 
-$app = new Application('Sphec', 'v0.2.0');
+$app = new Application('Sphec', 'v0.2.1');
 
 $app->add(new Sphec\SphecCommand());
 
