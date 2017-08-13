@@ -367,4 +367,27 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->expect($spec->reporter->failed)->to_be(0);
     });
   });
+  
+  $spec->describe('to_throw', function($spec) {
+    $spec->it('passes when throwing a match', function($spec) {
+      $spec->tester = new Sphec\Tester(function() { throw new OutOfRangeException; }, $spec->reporter);
+      $spec->tester->to_throw('OutOfRangeException');
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('passes when throwing a subclass', function($spec) {
+      $spec->tester = new Sphec\Tester(function() { throw new OutOfRangeException; }, $spec->reporter);
+      $spec->tester->to_throw('Exception');
+      $spec->expect($spec->reporter->passed)->to_be(1);
+      $spec->expect($spec->reporter->failed)->to_be(0);
+    });
+
+    $spec->it('fails when it does not throw', function($spec) {
+      $spec->tester = new Sphec\Tester(function () { }, $spec->reporter);
+      $spec->tester->to_throw('Exception');
+      $spec->expect($spec->reporter->passed)->to_be(0);
+      $spec->expect($spec->reporter->failed)->to_be(1);
+    });  
+  });
 });

@@ -131,6 +131,27 @@ class Tester {
   public function to_be_less_than_or_equal($expected) {
     $this->report($this->value <= $expected, 'to be less than or equal', $expected);
   }
+  
+  /**
+   * Tests whether the supplied function throws the expected exception.
+   *
+   * @param $expected The name of the expected exception as a string.
+   */
+  public function to_throw($expected) {
+    $result = false;
+    
+    if (is_callable($this->value)) {
+      try {
+        $this->value->__invoke();
+      } catch (\Exception $e) {
+        if (is_a($e, $expected)) {
+          $result = true;
+        }
+      }
+    }
+  
+    $this->report($result, 'to throw', $expected);
+  }
 
   /**
    * Reports whether the test passed or failed.
