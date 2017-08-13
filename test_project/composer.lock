@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kirkbowers/sphec.git",
-                "reference": "aa00f6d221fc38df6f2654d6082254cc100ddc44"
+                "reference": "c18c777c5358813a5fdda155da1f43a6918ff183"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kirkbowers/sphec/zipball/aa00f6d221fc38df6f2654d6082254cc100ddc44",
-                "reference": "aa00f6d221fc38df6f2654d6082254cc100ddc44",
+                "url": "https://api.github.com/repos/kirkbowers/sphec/zipball/c18c777c5358813a5fdda155da1f43a6918ff183",
+                "reference": "c18c777c5358813a5fdda155da1f43a6918ff183",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
                 "source": "https://github.com/kirkbowers/sphec/tree/development",
                 "issues": "https://github.com/kirkbowers/sphec/issues"
             },
-            "time": "2017-08-13T07:14:54+00:00"
+            "time": "2017-08-13T16:05:19+00:00"
         },
         {
             "name": "psr/log",

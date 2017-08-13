@@ -12,6 +12,7 @@ class DSLifier {
   function __construct($input, $filename = "") {
     $this->input = $input;
     $this->filename = $filename;
+    $this->current_indent = '';
   }
 
   public function is_blank_or_comment($line) {

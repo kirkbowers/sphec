@@ -41,13 +41,23 @@ class SphecCommand extends Command {
       $folders = array('spec');
     }
 
-    $files = array();
+    $php_files = array();
+    $shorthand_files = array();
 
     foreach ($folders as $folder) {
       if (is_dir($folder)) {
-        $files = array_merge($files, glob_recursive($folder . '/*_spec.php'));
+        $php_files = array_merge($php_files, glob_recursive($folder . '/*_spec.php'));
+        $shorthand_files = array_merge($shorthand_files, glob_recursive($folder . '/*_spec.sphec'));
       } else {
-        $files[] = $folder;
+        // It's a file.  Trust that it must have a suffix.  If not, we can probably
+        // discard it.
+        preg_match('/\.(\w+)$/', $folder, $matches);
+        $suffix = $matches[1];
+        if ($suffix == 'php') {
+          $php_files[] = $folder;
+        } else if ($suffix == 'sphec') {
+          $shorthand_files[] = $folder;
+        }
       }
     }
 
@@ -56,8 +66,22 @@ class SphecCommand extends Command {
     // that has this Symfony Output object.
     Sphec::$expector = new Expector($output);
 
-    foreach ($files as $file) {
+    foreach ($php_files as $file) {
       include $file;
+    }
+    
+    foreach ($shorthand_files as $file) {
+      $file_handle = fopen($file, "r") or die("Unable to open " . $file);
+      $shorthand = fread($file_handle, filesize($file));
+      fclose($file_handle);
+      
+      $dsl = new DSLifier($shorthand);
+      
+      // This should be safe, or at least no less safe than running the include above
+      // on the non shorthand PHP spec files.  This is code that the person running sphec
+      // supposedly wrote, so you're running your own code here.  It should be 
+      // trustworthy.
+      eval($dsl->get_php());
     }
     
     Sphec::run();

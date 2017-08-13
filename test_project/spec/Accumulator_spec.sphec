@@ -1,0 +1,50 @@
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Specify the behavior of a class
+specify Accumulator
+
+  // Describe how a method of that class is expected to behave
+  describe add
+
+    // Set up a subcontext with pre-test conditions shared by multiple examples.
+    context with default starting value
+    
+      // Set up those pre-test conditions in a before action
+      before
+        // "Local" variables to be shared by blocks within a context are declared
+        // using the @ symbol
+        @accumulator = new TestProject\Accumulator;
+      
+      // Provide examples of what the expected behavior is.
+      it should start with a zero value
+        // Note, the "local" member variable accumulator that was create in `before` is
+        // available inside the examples.
+        
+        // Write tests as expectations.
+        expect(@accumulator->get_value())->to_be(0);
+      
+      it should accumulate a single value
+        @accumulator->add(3);
+        expect(@accumulator->get_value())->to_be(3);
+      
+      it should accumulate more than one value
+        @accumulator->add(3);
+        @accumulator->add(5);
+        expect(@accumulator->get_value())->to_be(8);
+
+    // Set up a different context with different pre-test conditions.
+    context with supplied starting value
+      before
+        @accumulator = new TestProject\Accumulator(2);
+      
+      it should start with a zero value
+        expect(@accumulator->get_value())->to_be(2);
+      
+      it should accumulate a single value
+        @accumulator->add(3);
+        expect(@accumulator->get_value())->to_be(5);
+      
+      it should accumulate more than one value
+        @accumulator->add(3);
+        @accumulator->add(5);
+        expect(@accumulator->get_value())->to_be(10);
