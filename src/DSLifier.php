@@ -14,6 +14,7 @@ class DSLifier {
     $this->filename = $filename;
     $this->dirname = dirname($this->filename);
     $this->current_indent = '';
+    $this->heredoc = false;
   }
 
   public function is_blank_or_comment($line) {
@@ -108,7 +109,7 @@ class DSLifier {
     }
   }
   
-  private function handle_indent($indent, $is_command = true) {
+  private function handle_indent($indent, $is_command = true, $line = "") {
     $compare = $this->compare_indent($indent);
     
     if ($is_command) {
@@ -125,6 +126,10 @@ class DSLifier {
       
       $this->new_scope = true;
     } else {
+      if (!$this->heredoc && preg_match('/<<<(\w+)\s*$/', $line, $matches)) {
+        $this->heredoc = $matches[1];
+      }
+      
       if ($this->new_scope) {
         if ($compare <= 0) {
           $this->throw_bad_indent();
@@ -132,7 +137,11 @@ class DSLifier {
           $this->current_indent = $indent;        
         }
       } else {
-        if ($compare < 0) {
+        if ($this->heredoc) {
+          if (preg_match('/^' . $this->heredoc . ';/', $line, $matches)) {
+            $this->heredoc = false;
+          }
+        } else if ($compare < 0) {
           $this->throw_bad_indent();
         }
       }
@@ -188,10 +197,10 @@ class DSLifier {
           $this->result .= $this_indent . 
             $this->process_simple_command($matches, "\$spec->after") . "\n";
         } else if ($matches = $this->matches_expect($command)) {
-          $this->handle_indent($this_indent, false);
+          $this->handle_indent($this_indent, false, $command);
           $this->result .= $this_indent . $this->process_expect($matches) . "\n";
         } else {
-          $this->handle_indent($this_indent, false);
+          $this->handle_indent($this_indent, false, $command);
           $this->result .= $this_indent . $this->process_local_vars($command) . "\n";
         }
       
