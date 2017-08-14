@@ -2,6 +2,9 @@
     "autoload": {
         "psr-4": {"TestProject\\": "src/"}
     },
+    "config": {
+        "bin-dir": "bin"
+    },
     "repositories": [
         {
             "type": "vcs",

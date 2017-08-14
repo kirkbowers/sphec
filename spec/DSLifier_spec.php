@@ -372,6 +372,45 @@ EOF;
       $spec->expect($dsl->get_php())->to_be($output);
     });
   
+    $spec->it('allows heredocs inside before and it blocks', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  before
+    @foo = <<<END
+Some stuff
+Some more stuff
+END;
+  it does that thing
+    \$blech = <<<EOS 
+Some stuff
+Some more stuff
+EOS;
+    expect(@foo)->to_be(\$blech);
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->before(function(\$spec) {
+    \$spec->foo = <<<END
+Some stuff
+Some more stuff
+END;
+  });
+  \$spec->it('does that thing', function(\$spec) {
+    \$blech = <<<EOS 
+Some stuff
+Some more stuff
+EOS;
+    \$spec->expect(\$spec->foo)->to_be(\$blech);
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
+
     $spec->it('allows comments at the beginning of the line', function($spec) {
       $input = <<<EOF
 specify MyClass

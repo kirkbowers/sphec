@@ -6,7 +6,7 @@ To test it out, run:
     
 The run:
 
-    vendor/bin/sphec
+    ./bin/sphec
     
 It should successfully run the suite of tests in the spec subdirectory.
 
