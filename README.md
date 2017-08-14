@@ -258,7 +258,7 @@ Much like Python and CoffeeScript, the scope of blocks in Sphec shorthand is con
 
 Local variables go in and out of scope depending on the containing context.  In the above example, `@foo` is shared by both `context` blocks, but the two `context` blocks have their own unique copy of `@bar`.
 
-There are two notable exceptions to the rule about indenting.
+There are three notable exceptions to the rule about indenting.
 
 The inside of `before`, `after`, and `it` blocks is quasi-PHP.  That is, it's PHP with `@` local vars and `expect` commands that will be expanded by the Sphec parser.  If you need further inner scopes inside of these blocks, it should be handled by the usual PHP curly braces.  To make this concrete, if you need to declare an anonymous function to test for a raised exception, you can indent further inside your `it` block to style it nicely:
 
@@ -269,7 +269,7 @@ The inside of `before`, `after`, and `it` blocks is quasi-PHP.  That is, it's PH
           };
           expect($myfunc)->to_throw('CatastrophicException');
           
-The other exception is comments.  The indent level of comments are ignored, so it is legal to comment out sections by prepending the lines of code with double slashes or hashes.
+Another exception is comments.  The indent level of comments are ignored, so it is legal to comment out sections by prepending the lines of code with double slashes or hashes.
 
       context under certain circumstances
         it does something
@@ -280,6 +280,18 @@ The other exception is comments.  The indent level of comments are ignored, so i
         // We are still inside the "under certain circumstances" block
         it does something else
           ...
+
+A third exception is heredocs.  Inside of `before`, `after` and `it` blocks it is legal to assign values to variables using the heredoc notation.  In this case, the inside of the heredoc, and especially the marker closing the heredoc, may (must) be left justified.  Normal indenting rules resume once the heredoc is closed.
+
+      content under certain circumstances
+        it creates a multiline string
+          $blech = some_function_call();
+          $foo = <<<EOS
+    This left justified string does not break the indentation rules.
+    I have a few other things I could say...
+    EOS;
+    
+          expect($blech).to_be($foo);
 
 ## Future Areas of Development
 

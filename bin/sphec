@@ -21,7 +21,6 @@ $app->setDefaultCommand('sphec', true);
 $app->run();
 
 
-
 /**
  * Finds the Composer autoloader and returns it.
  * This code was pilfered from the box project.  Many thanks!
