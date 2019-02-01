@@ -1,0 +1,58 @@
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+specify Sphec\Mocks\Double
+  describe __sphec_is_legal_function
+    before
+      @double = new Sphec\Mocks\Double;
+
+    it always returns false when no legal functions have been added
+      expect(@double->__sphec_is_legal_function('foo'))->to_be_false();
+      expect(@double->__sphec_is_legal_function('blah'))->to_be_false();
+
+    it returns true for a function that has been added
+      @double->__sphec_add_legal_function('foo');
+      expect(@double->__sphec_is_legal_function('foo'))->to_be_true();
+
+    it throws an exception if you call a method that isn't legal
+      $double = @double;
+      $block = function() use ($double) { $double->foo(); };
+      expect($block)->to_throw('Sphec\Mocks\UnstubbedMethodException');
+
+    it does not throw an exception if you call a method that was added first
+      @double->__sphec_add_legal_function('foo');
+      $double = @double;
+      $block = function() use ($double) { $double->foo(); };
+      expect($block)->not_to_throw('Sphec\Mocks\UnstubbedMethodException');
+
+    it returns the value associated with an added function when called
+      @double->__sphec_add_legal_function('foo', 42);
+      expect(@double->foo())->to_be(42);
+
+  describe __sphec_name
+    it is (Anonymous) when nothing is passed to the constructor
+      $double = new Sphec\Mocks\Double;
+      expect($double->__sphec_name())->to_be('(Anonymous)');
+
+    it returns the first param to the constructor when it is a string
+      $double = new Sphec\Mocks\Double('blech');
+      expect($double->__sphec_name())->to_be('blech');
+
+    it is (Anonymous) when an array is the first arg to the constructor
+      $double = new Sphec\Mocks\Double(['blech' => 'foo']);
+      expect($double->__sphec_name())->to_be('(Anonymous)');
+
+    it returns the first param to the constructor when it is a string and the second is supplied
+      $double = new Sphec\Mocks\Double('blech', ['horf' => 'foo']);
+      expect($double->__sphec_name())->to_be('blech');
+
+  describe __construct
+    it converts the first param to recognized methods when it's a hash
+      $double = new Sphec\Mocks\Double(['blech' => 'foo', 'ultimate_question' => 42]);
+      expect($double->blech())->to_be('foo');
+      expect($double->ultimate_question())->to_be(42);
+
+    it converts the second param to recognized methods when the first is a string
+      $double = new Sphec\Mocks\Double('me', ['blech' => 'foo', 'ultimate_question' => 42]);
+      expect($double->blech())->to_be('foo');
+      expect($double->ultimate_question())->to_be(42);
+
