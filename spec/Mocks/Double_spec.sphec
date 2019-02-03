@@ -54,6 +54,19 @@ specify Sphec\Mocks\Double
       expect($double->blech())->to_be('foo');
       expect($double->ultimate_question())->to_be(42);
 
+  describe __sphec_function_call_count
+    before
+      @double = new Sphec\Mocks\Double(['blech' => 'foo']);
+
+    it starts out at zero
+      expect(@double->__sphec_function_call_count('blech'))->to_be(0);
+
+    it increments for each time the method is called
+      @double->blech();
+      expect(@double->__sphec_function_call_count('blech'))->to_be(1);
+      @double->blech();
+      expect(@double->__sphec_function_call_count('blech'))->to_be(2);
+
   describe test_double
     it returns a Double object
       $double = test_double();

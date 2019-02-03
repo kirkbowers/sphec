@@ -8,6 +8,7 @@ namespace Sphec\Mocks {
    */
   class Double {
     private $_legal_functions = array();
+    private $_function_call_counts = array();
     private $_name = '(Anonymous)';
 
     public function __construct($id = null, $legal_functions = null) {
@@ -37,10 +38,16 @@ namespace Sphec\Mocks {
 
     public function __sphec_add_legal_function($name, $result = null) {
       $this->_legal_functions[$name] = $result;
+      $this->_function_call_counts[$name] = 0;
+    }
+
+    public function __sphec_function_call_count($name) {
+      return $this->_function_call_counts[$name];
     }
 
     public function __call($name, $arguments) {
       if ($this->__sphec_is_legal_function($name)) {
+        $this->_function_call_counts[$name]++;
         return $this->_legal_functions[$name];
       } else {
         throw new UnstubbedMethodException;
