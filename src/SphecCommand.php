@@ -1,18 +1,23 @@
 <?php
+
 namespace Sphec;
+
+if (file_exists('spec/sphec_helper.php')) {
+  include 'spec/sphec_helper.php';
+}
 
 if ( ! function_exists('glob_recursive'))
 {
-  // Does not support flag GLOB_BRACE    
+  // Does not support flag GLOB_BRACE
   function glob_recursive($pattern, $flags = 0)
   {
     $files = glob($pattern, $flags);
-    
+
     foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir)
     {
       $files = array_merge($files, glob_recursive($dir.'/'.basename($pattern), $flags));
     }
-    
+
     return $files;
   }
 }
@@ -71,24 +76,23 @@ class SphecCommand extends Command {
     foreach ($php_files as $file) {
       include $file;
     }
-    
+
     foreach ($shorthand_files as $file) {
       $file = realpath($file);
       $file_handle = fopen($file, "r") or die("Unable to open " . $file);
       $shorthand = fread($file_handle, filesize($file));
       fclose($file_handle);
-      
+
       $dsl = new DSLifier($shorthand, $file);
-      
+
       // This should be safe, or at least no less safe than running the include above
       // on the non shorthand PHP spec files.  This is code that the person running sphec
-      // supposedly wrote, so you're running your own code here.  It should be 
+      // supposedly wrote, so you're running your own code here.  It should be
       // trustworthy.
       $php = $dsl->get_php();
       eval($php);
     }
-    
+
     Sphec::run();
   }
 }
-

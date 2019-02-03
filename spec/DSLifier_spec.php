@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 Sphec\Sphec::specify('DSLifier', function($spec) {
   $spec->describe('is_blank_or_comment', function($spec) {
     $spec->it('returns true on an empty string', function($spec) {
@@ -123,9 +121,9 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
       $spec->expect($result)->to_be($expected);
     });
   });
-  
-  
-  
+
+
+
   $spec->describe('get_php', function($spec) {
     $spec->it('closes a bare specify', function($spec) {
       $input = <<<EOF
@@ -141,7 +139,7 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
-  
+
     $spec->it('closes an indented specify', function($spec) {
       $input = <<<EOF
   specify MyClass
@@ -156,7 +154,7 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
-  
+
     $spec->it('closes a specify and a describe', function($spec) {
       $input = <<<EOF
 specify MyClass
@@ -174,7 +172,7 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
-  
+
     $spec->it('closes a specify and two sibling describes', function($spec) {
       $input = <<<EOF
 specify MyClass
@@ -195,7 +193,7 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
-  
+
     $spec->it('closes a specify and embedded describes', function($spec) {
       $input = <<<EOF
 specify MyClass
@@ -216,7 +214,7 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
-  
+
     $spec->it('closes a specify and embedded describes and contexts', function($spec) {
       $input = <<<EOF
 specify MyClass
@@ -243,7 +241,7 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
-  
+
     $spec->it('closes a specify and an it', function($spec) {
       $input = <<<EOF
 specify MyClass
@@ -278,7 +276,7 @@ EOF;
       $block = function() use ($dsl) { $dsl->get_php(); };
       $spec->expect($block)->to_throw('Sphec\BadIndentException');
     });
-  
+
     $spec->it('closes a specify and a before and it', function($spec) {
       $input = <<<EOF
 specify MyClass
@@ -305,7 +303,7 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
-  
+
     $spec->it('closes a specify and an after and it', function($spec) {
       $input = <<<EOF
 specify MyClass
@@ -334,7 +332,7 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
-  
+
     $spec->it('allows uneven indents inside before and it blocks', function($spec) {
       $input = <<<EOF
 specify MyClass
@@ -371,7 +369,7 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
-  
+
     $spec->it('allows heredocs inside before and it blocks', function($spec) {
       $input = <<<EOF
 specify MyClass
@@ -381,7 +379,7 @@ Some stuff
 Some more stuff
 END;
   it does that thing
-    \$blech = <<<EOS 
+    \$blech = <<<EOS
 Some stuff
 Some more stuff
 EOS;
@@ -397,7 +395,7 @@ Some more stuff
 END;
   });
   \$spec->it('does that thing', function(\$spec) {
-    \$blech = <<<EOS 
+    \$blech = <<<EOS
 Some stuff
 Some more stuff
 EOS;
@@ -445,6 +443,5 @@ EOF;
       $dsl = new Sphec\DSLifier($input);
       $spec->expect($dsl->get_php())->to_be($output);
     });
-  });  
+  });
 });
-    

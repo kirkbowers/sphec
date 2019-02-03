@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 Sphec\Sphec::specify('Tester', function($spec) {
   $spec->before(function($spec) {
     $spec->reporter = new Sphec\Reporter;
@@ -11,7 +9,7 @@ Sphec\Sphec::specify('Tester', function($spec) {
     $spec->before(function($spec) {
       $spec->tester = new Sphec\Tester(3, $spec->reporter);
     });
-    
+
     $spec->it('passes with same value and type', function($spec) {
       $spec->tester->to_be_equivalent(3);
       $spec->expect($spec->reporter->passed)->to_be(1);
@@ -35,7 +33,7 @@ Sphec\Sphec::specify('Tester', function($spec) {
     $spec->before(function($spec) {
       $spec->tester = new Sphec\Tester(3, $spec->reporter);
     });
-    
+
     $spec->it('passes with same value and type', function($spec) {
       $spec->tester->to_be(3);
       $spec->expect($spec->reporter->passed)->to_be(1);
@@ -59,7 +57,7 @@ Sphec\Sphec::specify('Tester', function($spec) {
     $spec->before(function($spec) {
       $spec->tester = new Sphec\Tester(3, $spec->reporter);
     });
-    
+
     $spec->it('passes with same value and type', function($spec) {
       $spec->tester->to_equal(3);
       $spec->expect($spec->reporter->passed)->to_be(1);
@@ -77,7 +75,7 @@ Sphec\Sphec::specify('Tester', function($spec) {
     $spec->before(function($spec) {
       $spec->tester = new Sphec\Tester(3, $spec->reporter);
     });
-    
+
     $spec->it('fails with same value and type', function($spec) {
       $spec->tester->to_not_be(3);
       $spec->expect($spec->reporter->passed)->to_be(0);
@@ -101,7 +99,7 @@ Sphec\Sphec::specify('Tester', function($spec) {
     $spec->before(function($spec) {
       $spec->tester = new Sphec\Tester(3, $spec->reporter);
     });
-    
+
     $spec->it('fails with same value and type', function($spec) {
       $spec->tester->to_not_equal(3);
       $spec->expect($spec->reporter->passed)->to_be(0);
@@ -247,12 +245,12 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->expect($spec->reporter->failed)->to_be(0);
     });
   });
-  
+
   $spec->describe('to_be_greater_than', function($spec) {
     $spec->before(function($spec) {
       $spec->tester = new Sphec\Tester(3, $spec->reporter);
     });
-    
+
     $spec->it('fails with same value and type', function($spec) {
       $spec->tester->to_be_greater_than(3);
       $spec->expect($spec->reporter->passed)->to_be(0);
@@ -277,12 +275,12 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->expect($spec->reporter->failed)->to_be(0);
     });
   });
-  
+
   $spec->describe('to_be_greater_than_or_equal', function($spec) {
     $spec->before(function($spec) {
       $spec->tester = new Sphec\Tester(3, $spec->reporter);
     });
-    
+
     $spec->it('passes with same value and type', function($spec) {
       $spec->tester->to_be_greater_than_or_equal(3);
       $spec->expect($spec->reporter->passed)->to_be(1);
@@ -307,12 +305,12 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->expect($spec->reporter->failed)->to_be(0);
     });
   });
-  
+
   $spec->describe('to_be_less_than', function($spec) {
     $spec->before(function($spec) {
       $spec->tester = new Sphec\Tester(3, $spec->reporter);
     });
-    
+
     $spec->it('fails with same value and type', function($spec) {
       $spec->tester->to_be_less_than(3);
       $spec->expect($spec->reporter->passed)->to_be(0);
@@ -337,12 +335,12 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->expect($spec->reporter->failed)->to_be(0);
     });
   });
-  
+
   $spec->describe('to_be_less_than_or_equal', function($spec) {
     $spec->before(function($spec) {
       $spec->tester = new Sphec\Tester(3, $spec->reporter);
     });
-    
+
     $spec->it('passes with same value and type', function($spec) {
       $spec->tester->to_be_less_than_or_equal(3);
       $spec->expect($spec->reporter->passed)->to_be(1);
@@ -367,7 +365,7 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->expect($spec->reporter->failed)->to_be(0);
     });
   });
-  
+
   $spec->describe('to_throw', function($spec) {
     $spec->it('passes when throwing a match', function($spec) {
       $spec->tester = new Sphec\Tester(function() { throw new OutOfRangeException; }, $spec->reporter);
@@ -388,9 +386,9 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->tester->to_throw('Exception');
       $spec->expect($spec->reporter->passed)->to_be(0);
       $spec->expect($spec->reporter->failed)->to_be(1);
-    });  
+    });
   });
-  
+
   $spec->describe('not_to_throw', function($spec) {
     $spec->it('passes when nothing is thrown', function($spec) {
       $spec->tester = new Sphec\Tester(function () { }, $spec->reporter);
@@ -404,6 +402,6 @@ Sphec\Sphec::specify('Tester', function($spec) {
       $spec->tester->not_to_throw();
       $spec->expect($spec->reporter->passed)->to_be(0);
       $spec->expect($spec->reporter->failed)->to_be(1);
-    });  
+    });
   });
 });

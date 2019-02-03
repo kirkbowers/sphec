@@ -1,25 +1,23 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 Sphec\Sphec::specify('Context', function($spec) {
   $spec->describe('before', function($spec) {
     $spec->it('executes before actions as expected', function($spec) {
-      // This is a nasty thing to unit test.  Ideally we'd do this in a lot of 
-      // separate examples, and use before to set up a shared scope for all the 
+      // This is a nasty thing to unit test.  Ideally we'd do this in a lot of
+      // separate examples, and use before to set up a shared scope for all the
       // similar examples, but that begs the question.  I want to prove `before` works
       // without using it.  So I do some local setup inside this example, and it's a
       // very long example that runs through a few different scenarios.
-      
+
       $tracker = array();
-      
-      $outer = new Sphec\Context('Outer', function($spec) use (&$tracker) { 
+
+      $outer = new Sphec\Context('Outer', function($spec) use (&$tracker) {
         $spec->before(function($spec) use (&$tracker) {
           $tracker = array('Outer');
         });
       });
       $outer->quiet = true;
-      
+
       $outer_example = $outer->it('does nothing', function($spec) {});
 
       $outer->run();
@@ -34,7 +32,7 @@ Sphec\Sphec::specify('Context', function($spec) {
           $tracker[] = 'Inner';
         });
       });
-      
+
       $inner_example1 = $inner->it('does nothing', function($spec) {});
       $inner_example2 = $inner->it('does nothing', function($spec) {});
 
@@ -50,7 +48,7 @@ Sphec\Sphec::specify('Context', function($spec) {
       $inner_example2->run();
       $spec->expect($tracker)->to_equal(array('Outer', 'Inner'));
 
-      
+
       $outer->before(function($spec) use (&$tracker) {
         $tracker[] = 'Outer2';
       });
@@ -71,15 +69,15 @@ Sphec\Sphec::specify('Context', function($spec) {
 
   $spec->describe('after', function($spec) {
     $spec->it('executes after actions as expected', function($spec) {
-      // This is a nasty thing to unit test.  Ideally we'd do this in a lot of 
-      // separate examples, and use before to set up a shared scope for all the 
+      // This is a nasty thing to unit test.  Ideally we'd do this in a lot of
+      // separate examples, and use before to set up a shared scope for all the
       // similar examples, but that begs the question.  I want to prove `before` works
       // without using it.  So I do some local setup inside this example, and it's a
       // very long example that runs through a few different scenarios.
-      
+
       $tracker = array();
-      
-      $outer = new Sphec\Context('Outer', function($spec) use (&$tracker) { 
+
+      $outer = new Sphec\Context('Outer', function($spec) use (&$tracker) {
         $spec->before(function($spec) use (&$tracker) {
           $tracker = array('Before Outer');
         });
@@ -89,9 +87,9 @@ Sphec\Sphec::specify('Context', function($spec) {
         });
       });
       $outer->quiet = true;
-      
+
       $outer_example = $outer->it('Outer Example', function($spec) use (&$tracker) {
-        $tracker[] = 'Outer Example';      
+        $tracker[] = 'Outer Example';
       });
 
 
@@ -110,7 +108,7 @@ Sphec\Sphec::specify('Context', function($spec) {
       });
 
       $middle_example = $middle->it('Middle Example', function($spec) use (&$tracker) {
-        $tracker[] = 'Middle Example';      
+        $tracker[] = 'Middle Example';
       });
 
 
@@ -123,24 +121,24 @@ Sphec\Sphec::specify('Context', function($spec) {
           $tracker[] = 'After Inner';
         });
       });
-      
+
       $inner_example1 = $inner->it('Inner Example 1', function($spec) use (&$tracker) {
-        $tracker[] = 'Inner Example 1';      
+        $tracker[] = 'Inner Example 1';
       });
       $inner_example2 = $inner->it('Inner Example 2', function($spec) use (&$tracker) {
-        $tracker[] = 'Inner Example 2';      
+        $tracker[] = 'Inner Example 2';
       });
 
       $outer_example->run();
       $spec->expect($tracker)->to_equal(array(
-        'Before Outer', 
+        'Before Outer',
         'Outer Example',
         'After Outer',
       ));
 
       $middle_example->run();
       $spec->expect($tracker)->to_equal(array(
-        'Before Outer', 
+        'Before Outer',
         'Before Middle',
         'Middle Example',
         'After Middle',
@@ -150,7 +148,7 @@ Sphec\Sphec::specify('Context', function($spec) {
 
       $inner_example1->run();
       $spec->expect($tracker)->to_equal(array(
-        'Before Outer', 
+        'Before Outer',
         'Before Middle',
         'Before Inner',
         'Inner Example 1',
@@ -162,7 +160,7 @@ Sphec\Sphec::specify('Context', function($spec) {
 
       $inner_example2->run();
       $spec->expect($tracker)->to_equal(array(
-        'Before Outer', 
+        'Before Outer',
         'Before Middle',
         'Before Inner',
         'Inner Example 2',
