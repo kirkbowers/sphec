@@ -56,3 +56,25 @@ specify Sphec\Mocks\Double
       expect($double->blech())->to_be('foo');
       expect($double->ultimate_question())->to_be(42);
 
+  describe test_double
+    it returns a Double object
+      $double = test_double();
+      expect($double instanceof \Sphec\Mocks\Double)->to_be_true();
+
+    it has an anonymous sphec name when passed no arguments
+      $double = test_double();
+      expect($double->__sphec_name())->to_be('(Anonymous)');
+
+    it the first argument as the sphec name when it's a string
+      $double = test_double('my double');
+      expect($double->__sphec_name())->to_be('my double');
+
+    it converts the first param to recognized methods when it's a hash
+      $double = test_double(['blech' => 'foo', 'ultimate_question' => 42]);
+      expect($double->blech())->to_be('foo');
+      expect($double->ultimate_question())->to_be(42);
+
+    it converts the second param to recognized methods when the first is a string
+      $double = test_double('me', ['blech' => 'foo', 'ultimate_question' => 42]);
+      expect($double->blech())->to_be('foo');
+      expect($double->ultimate_question())->to_be(42);
