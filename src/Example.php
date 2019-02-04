@@ -33,9 +33,12 @@ class Example extends Runnable {
       if ($this->_expector->output && $this->_expector->output->isVerbose()) {
         $this->_expector->output->writeln('');
       }
+    } catch (\Sphec\Mocks\UnstubbedMethodException $e) {
+      throw $e;
     } catch (\Exception $e) {
       // TODO:
       // Report it as an error
+      throw $e;
     } finally {
       $this->_parent->run_afters($this);
     }

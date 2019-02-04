@@ -1,0 +1,38 @@
+specify Sphec\Tester
+  describe register_matcher
+    before
+      if (!class_exists('Sphec_Tester_spec_FakeMatcher')) {
+        class Sphec_Tester_spec_FakeMatcher {
+          const ALIASES = ['fake'];
+
+          public function matches() {
+            return true;
+          }
+
+          public function failure_message() {
+            return 'fake failure';
+          }
+        }
+      }
+
+      Sphec\Tester::register_matcher('Sphec_Tester_spec_FakeMatcher');
+
+      @actual = new \Sphec\Mocks\Double('actual');
+      // @actual = test_double('actual');
+      @reporter = test_double('reporter', ['pass' => null, 'fail' => null]);
+
+      @subject = new Sphec\Tester(@actual, @reporter);
+
+    it throws an exception when the matcher is unrecognized
+      $subject = @subject;
+      $block = function() use ($subject) {
+        $subject->to_garbage();
+      };
+      expect($block)->to_throw('Sphec\Matchers\UnrecognizedMatcherException');
+
+    it creates a to_* method that returns the matches method's result
+      $result = @subject->to_fake();
+      expect(@subject->to_fake())->to_be(true);
+
+    it creates a not_to_* method that returns the matches method's result negated
+      expect(@subject->not_to_fake())->to_be(false);

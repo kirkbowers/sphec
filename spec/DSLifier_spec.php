@@ -105,7 +105,7 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
 
 
   $spec->describe('process_expect', function($spec) {
-    $spec->it('convert simple expect', function($spec) {
+    $spec->it('converts simple expect', function($spec) {
       $dsl = new Sphec\DSLifier('');
       $matches = $dsl->matches_expect('expect($foo)->to_be(1);');
       $result = $dsl->process_expect($matches);
@@ -113,11 +113,21 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
       $spec->expect($result)->to_be($expected);
     });
 
-    $spec->it('convert expect with local vars', function($spec) {
+    $spec->it('converts expect with local vars', function($spec) {
       $dsl = new Sphec\DSLifier('');
       $matches = $dsl->matches_expect('expect(@foo + 1)->to_be(@blech);');
       $result = $dsl->process_expect($matches);
       $expected = "\$spec->expect(\$spec->foo + 1)->to_be(\$spec->blech);";
+      $spec->expect($result)->to_be($expected);
+    });
+  });
+
+  $spec->describe('process_expect_function', function($spec) {
+    $spec->it('converts expect to braces to an anonymous function', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $matches = $dsl->matches_expect_function('expect_function({ @foo + 1; })->to_be(@blech);');
+      $result = $dsl->process_expect_function($matches);
+      $expected = "\$spec->expect(function() use (\$spec) { \$spec->foo + 1; })->to_be(\$spec->blech);";
       $spec->expect($result)->to_be($expected);
     });
   });

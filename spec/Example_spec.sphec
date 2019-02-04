@@ -2,6 +2,7 @@ specify Sphec\Example
   before
     @label = 'label';
     @block = new \Sphec\Mocks\Double('block', ['__invoke' => null]);
+    // @block = test_double('block', ['__invoke' => null]);
     @indent = '';
     @expector = test_double('expector');
     @expector->output = null;
@@ -38,11 +39,11 @@ specify Sphec\Example
         @subject = new Sphec\Example(@label, @block, @indent, @parent);
 
       it calls run_befores on the parent
-        @subject->run();
+        expect_function({ @subject->run(); })->to_throw('Exception');
         expect(@parent->__sphec_function_call_count('run_befores'))->to_be(1);
 
       it calls run_afters on the parent
-        @subject->run();
+        expect_function({ @subject->run(); })->to_throw('Exception');
         expect(@parent->__sphec_function_call_count('run_afters'))->to_be(1);
 
 
