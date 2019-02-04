@@ -125,7 +125,7 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
   $spec->describe('process_expect_function', function($spec) {
     $spec->it('converts expect to braces to an anonymous function', function($spec) {
       $dsl = new Sphec\DSLifier('');
-      $matches = $dsl->matches_expect_function('expect_function({ @foo + 1; })->to_be(@blech);');
+      $matches = $dsl->matches_expect_function('expect({ @foo + 1; })->to_be(@blech);');
       $result = $dsl->process_expect_function($matches);
       $expected = "\$spec->expect(function() use (\$spec) { \$spec->foo + 1; })->to_be(\$spec->blech);";
       $spec->expect($result)->to_be($expected);

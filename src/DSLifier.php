@@ -74,7 +74,7 @@ class DSLifier {
   }
 
   public function matches_expect_function($line) {
-    if (preg_match('/^expect_function\s*\(\s*\{(.*)$/', $line, $matches)) {
+    if (preg_match('/^expect\s*\(\s*\{(.*)$/', $line, $matches)) {
       return $matches;
     }
     return false;
@@ -211,12 +211,12 @@ class DSLifier {
           $this->handle_indent($this_indent);
           $this->result .= $this_indent .
             $this->process_simple_command($matches, "\$spec->after") . "\n";
-        } else if ($matches = $this->matches_expect($command)) {
-          $this->handle_indent($this_indent, false, $command);
-          $this->result .= $this_indent . $this->process_expect($matches) . "\n";
         } else if ($matches = $this->matches_expect_function($command)) {
           $this->handle_indent($this_indent, false, $command);
           $this->result .= $this_indent . $this->process_expect_function($matches) . "\n";
+        } else if ($matches = $this->matches_expect($command)) {
+          $this->handle_indent($this_indent, false, $command);
+          $this->result .= $this_indent . $this->process_expect($matches) . "\n";
         } else {
           $this->handle_indent($this_indent, false, $command);
           $this->result .= $this_indent . $this->process_local_vars($command) . "\n";
