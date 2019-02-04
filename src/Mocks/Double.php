@@ -50,7 +50,7 @@ namespace Sphec\Mocks {
         $this->_function_call_counts[$name]++;
         return $this->_legal_functions[$name];
       } else {
-        throw new UnstubbedMethodException;
+        throw new UnstubbedMethodException("Call of unstubbed method $name on test double $this->_name");
       }
     }
   }

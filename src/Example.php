@@ -11,7 +11,7 @@ class Example extends Runnable {
     parent::__construct($label, $block, $indent, $parent);
     $this->_expector = $parent->_expector;
   }
-  
+
   /**
    * Creates an expectation that can be tested.
    *
@@ -23,16 +23,21 @@ class Example extends Runnable {
 
   public function run() {
     $this->_parent->run_befores($this);
-  
-    if ($this->_expector->output && $this->_expector->output->isVerbose()) {
-      $this->_expector->output->writeln($this->_indent . $this->_label);
-      $this->_expector->output->write($this->_indent);
+
+    try {
+      if ($this->_expector->output && $this->_expector->output->isVerbose()) {
+        $this->_expector->output->writeln($this->_indent . $this->_label);
+        $this->_expector->output->write($this->_indent);
+      }
+      $this->_block->__invoke($this);
+      if ($this->_expector->output && $this->_expector->output->isVerbose()) {
+        $this->_expector->output->writeln('');
+      }
+    } catch (\Exception $e) {
+      // TODO:
+      // Report it as an error
+    } finally {
+      $this->_parent->run_afters($this);
     }
-    $this->_block->__invoke($this);
-    if ($this->_expector->output && $this->_expector->output->isVerbose()) {
-      $this->_expector->output->writeln('');
-    }
-    
-    $this->_parent->run_afters($this);
   }
 }

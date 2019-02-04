@@ -53,7 +53,7 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
     $spec->it('converts a specify with a simple string', function($spec) {
       $dsl = new Sphec\DSLifier('');
       $matches = $dsl->matches_command('specify', 'specify MyClass');
-      $result = $dsl->process_command($matches, "Sphec\\Sphec::specify");
+      $result = $dsl->process_command($matches[1], "Sphec\\Sphec::specify");
       $expected = "Sphec\\Sphec::specify('MyClass', function(\$spec) {";
       $spec->expect($result)->to_be($expected);
     });
@@ -61,7 +61,7 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
     $spec->it('converts a specify with a single quote', function($spec) {
       $dsl = new Sphec\DSLifier('');
       $matches = $dsl->matches_command('specify', "specify can't touch this");
-      $result = $dsl->process_command($matches, "Sphec\\Sphec::specify");
+      $result = $dsl->process_command($matches[1], "Sphec\\Sphec::specify");
       $expected = "Sphec\\Sphec::specify('can\\'t touch this', function(\$spec) {";
       $spec->expect($result)->to_be($expected);
     });
@@ -69,7 +69,7 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
     $spec->it('converts a describe with a simple string', function($spec) {
       $dsl = new Sphec\DSLifier('');
       $matches = $dsl->matches_command('describe', 'describe my_method');
-      $result = $dsl->process_command($matches, "\$spec->describe");
+      $result = $dsl->process_command($matches[1], "\$spec->describe");
       $expected = "\$spec->describe('my_method', function(\$spec) {";
       $spec->expect($result)->to_be($expected);
     });
@@ -233,6 +233,24 @@ Sphec\\Sphec::specify('MyClass', function(\$spec) {
     });
   });
   \$spec->describe('other_method', function(\$spec) {
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
+
+    $spec->it('closes a specify and embedded whens, converting whens to contexts', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  when this is the scenario
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->context('when this is the scenario', function(\$spec) {
   });
 });
 

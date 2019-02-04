@@ -24,25 +24,25 @@ Here's what an example Sphec file looks like, with comments to point out some of
 
         // Set up a subcontext with pre-test conditions shared by multiple examples.
         context with default starting value
-    
+
           // Set up those pre-test conditions in a before action
           before
             // "Local" variables to be shared by blocks within a context are declared
             // using the @ symbol
             @accumulator = new TestProject\Accumulator;
-      
+
           // Provide examples of what the expected behavior is.
           it should start with a zero value
             // Note, the "local" member variable accumulator that was create in `before` is
             // available inside the examples.
-        
+
             // Write tests as expectations.
             expect(@accumulator->get_value())->to_be(0);
-      
+
           it should accumulate a single value
             @accumulator->add(3);
             expect(@accumulator->get_value())->to_be(3);
-      
+
           it should accumulate more than one value
             @accumulator->add(3);
             @accumulator->add(5);
@@ -52,14 +52,14 @@ Here's what an example Sphec file looks like, with comments to point out some of
         context with supplied starting value
           before
             @accumulator = new TestProject\Accumulator(2);
-      
+
           it should start with a zero value
             expect(@accumulator->get_value())->to_be(2);
-      
+
           it should accumulate a single value
             @accumulator->add(3);
             expect(@accumulator->get_value())->to_be(5);
-      
+
           it should accumulate more than one value
             @accumulator->add(3);
             @accumulator->add(5);
@@ -70,9 +70,9 @@ Under the hood, this gets converted to PHP and then eval'd.  Since PHP does not 
 Here's what the above sphec shorthand gets converted into in actual PHP:
 
     <?php
-    
+
     require_once __DIR__ . '/../vendor/autoload.php';
-    
+
     // Specify the behavior of a class
     Sphec\Sphec::specify('TestProject\Accumulator', function($spec) {
 
@@ -81,31 +81,31 @@ Here's what the above sphec shorthand gets converted into in actual PHP:
 
         // Set up a subcontext with pre-test conditions shared by multiple examples.
         $spec->context('with default starting value', function($spec) {
-    
+
           // Set up those pre-test conditions in a before action
           $spec->before(function($spec) {
             $spec->accumulator = new TestProject\Accumulator;
           });
-      
+
           // Provide examples of what the expected behavior is.
           $spec->it('should start with a zero value', function($spec) {
             // Note, the "local" member variable accumulator that was create in `before` is
             // available inside the examples.
-        
+
             // Write tests as expectations.
             $spec->expect($spec->accumulator->get_value())->to_be(0);
           });
-      
+
           $spec->it('should accumulate a single value', function($spec) {
             $spec->accumulator->add(3);
             $spec->expect($spec->accumulator->get_value())->to_be(3);
           });
-      
+
           $spec->it('should accumulate more than one value', function($spec) {
             $spec->accumulator->add(3);
             $spec->accumulator->add(5);
             $spec->expect($spec->accumulator->get_value())->to_be(8);
-          });      
+          });
         });
 
         // Set up a different context with different pre-test conditions.
@@ -113,21 +113,21 @@ Here's what the above sphec shorthand gets converted into in actual PHP:
           $spec->before(function($spec) {
             $spec->accumulator = new TestProject\Accumulator(2);
           });
-      
+
           $spec->it('should start with a zero value', function($spec) {
             $spec->expect($spec->accumulator->get_value())->to_be(2);
           });
-      
+
           $spec->it('should accumulate a single value', function($spec) {
             $spec->accumulator->add(3);
             $spec->expect($spec->accumulator->get_value())->to_be(5);
           });
-      
+
           $spec->it('should accumulate more than one value', function($spec) {
             $spec->accumulator->add(3);
             $spec->accumulator->add(5);
             $spec->expect($spec->accumulator->get_value())->to_be(10);
-          });      
+          });
         });
       });
     });
@@ -139,19 +139,19 @@ Note that every anonymous function takes a parameter named `$spec`.  It can be n
 The preferred way to install Sphec is with [Composer](https://getcomposer.org).  Assuming you have Composer installed, run:
 
     composer global require kirkbowers/sphec
-    
+
 Then, assuming you have `$COMPOSER_HOME/vendor/bin` in your executable path, you should be good to go.
 
 ## Running Sphec
 
-Sphec is a command line tool.  By default, it expects to be run in the root directory of a project, it expects all specs to be in a directory called `spec`, and it expects all spec files to end in either the suffix `_spec.sphec` or `_spec.php`.  
+Sphec is a command line tool.  By default, it expects to be run in the root directory of a project, it expects all specs to be in a directory called `spec`, and it expects all spec files to end in either the suffix `_spec.sphec` or `_spec.php`.
 
 Files ending with the suffix `.sphec` will be treated as Sphec shorthand and will be converted to PHP before being run.  Files ending with `.php` will be run as is.
 
 If those assumptions hold, you can simply run it on the command line:
 
     sphec
-    
+
 This will show the output as a string of dots and/or F's for each test that passed or failed, followed by a summary:
 
     $ sphec
@@ -194,7 +194,7 @@ You are in an example scope whenever you are inside an `it` block.  Example bloc
 Tests are performed inside of examples by stating expectations.  An expectation always takes this form:
 
       expect($computed)->test($expected);
-      
+
 Where `test` is one of the test methods listed below (some tests, like `to_be_falsey`, do not take an `$expected` parameter).  Execution will continue after any expectations that fail, with all the failures gathered up and reported on the console after all tests have been performed.
 
 ### Available tests
@@ -237,7 +237,7 @@ Where `test` is one of the test methods listed below (some tests, like `to_be_fa
           @foo = 3;
         it uses a local var in an example
           expect(@foo)->to_be(3);
-          
+
 ## Scope is defined by indent level
 
 Much like Python and CoffeeScript, the scope of blocks in Sphec shorthand is controlled by the level of indentation.  For example, the two `context` blocks below are peers:
@@ -268,7 +268,7 @@ The inside of `before`, `after`, and `it` blocks is quasi-PHP.  That is, it's PH
             // Do something that might throw an exception
           };
           expect($myfunc)->to_throw('CatastrophicException');
-          
+
 Another exception is comments.  The indent level of comments are ignored, so it is legal to comment out sections by prepending the lines of code with double slashes or hashes.
 
       context under certain circumstances
@@ -290,8 +290,8 @@ A third exception is heredocs.  Inside of `before`, `after` and `it` blocks it i
     This left justified string does not break the indentation rules.
     I have a few other things I could say...
     EOS;
-    
-          expect($blech).to_be($foo);
+
+          expect($blech)->to_be($foo);
 
 ## Future Areas of Development
 
@@ -314,17 +314,17 @@ There are three ways to test Sphec if you are working on it.
 One, there are tests of Sphec's core functionality.  These tests go through a bit of gymnastics to unit test the inner workings, but they run directly off the root directory.  To run them, simply run:
 
     bin/sphec
-    
+
 Two, there are tests that all fail so that the failure messages can be visually inspected.  I'm of the strong mindset that any UI element, even if it is just printing to the console, must be visually inspected to make sure it looks as you'd expect.  To inspect the failure messages, run:
 
     bin/sphec failure_spec
-    
+
 Three, there is a test project that runs the latest `development` branch from github on a more conventional suite of tests (without going through the hoops necessary for Sphec to test itself).  To test them, run these steps from the project root:
 
     cd test_project/
-    composer update 
+    composer update
     vendor/bin/sphec
-    
+
 You should see a "Success!" message.
 
 Enjoy!

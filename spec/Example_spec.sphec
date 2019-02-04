@@ -1,0 +1,48 @@
+specify Sphec\Example
+  before
+    @label = 'label';
+    @block = new \Sphec\Mocks\Double('block', ['__invoke' => null]);
+    @indent = '';
+    @expector = test_double('expector');
+    @expector->output = null;
+    @parent = test_double('parent',
+      [
+        'run_befores' => null,
+        'run_afters' => null,
+      ]
+    );
+    @parent->_expector = @expector;
+
+  describe run
+    when the block runs with no side effects
+      before
+        @subject = new Sphec\Example(@label, @block, @indent, @parent);
+
+      it calls run_befores on the parent
+        @subject->run();
+        expect(@parent->__sphec_function_call_count('run_befores'))->to_be(1);
+
+      it invokes the block
+        @subject->run();
+        expect(@block->__sphec_function_call_count('__invoke'))->to_be(1);
+
+      it calls run_afters on the parent
+        @subject->run();
+        expect(@parent->__sphec_function_call_count('run_afters'))->to_be(1);
+
+    when the block throws an exception
+      before
+        @block = function($spec) {
+          throw new Exception;
+        };
+        @subject = new Sphec\Example(@label, @block, @indent, @parent);
+
+      it calls run_befores on the parent
+        @subject->run();
+        expect(@parent->__sphec_function_call_count('run_befores'))->to_be(1);
+
+      it calls run_afters on the parent
+        @subject->run();
+        expect(@parent->__sphec_function_call_count('run_afters'))->to_be(1);
+
+
