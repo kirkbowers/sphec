@@ -1,0 +1,15 @@
+specify Sphec\Matchers\ThrowsMatcher
+  it returns true when passed a function that throws an error
+    $function = function() { throw new \Exception; };
+    $subject = new Sphec\Matchers\ThrowsMatcher($function);
+    expect($subject->matches('Exception'))->to_be_truthy();
+
+  it returns false when passed a function that throws a different error
+    $function = function() { throw new \Exception; };
+    $subject = new Sphec\Matchers\ThrowsMatcher($function);
+    expect($subject->matches('DivisionByZeroError'))->to_be_falsey();
+
+  it returns false when passed a function that doesn't throw an error
+    $function = function() { };
+    $subject = new Sphec\Matchers\ThrowsMatcher($function);
+    expect($subject->matches('Exception'))->to_be_falsey();

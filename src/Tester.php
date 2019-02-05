@@ -64,88 +64,6 @@ class Tester {
   }
 
   /**
-   * Tests against logical equivalence (same value and type) using ===
-   *
-   * @param $expected The expected value to be tested against.
-   */
-  // public function to_be_equivalent($expected) {
-  //   $this->report($this->value === $expected, 'to be equivalent to', $expected);
-  // }
-
-  /**
-   * Convenience alias for `to_be_equivalent`.
-   *
-   * @param $expected The expected value to be tested against.
-   * @see to_be_equivalent
-   */
-  // public function to_be($expected) {
-  //   $this->to_be_equivalent($expected);
-  // }
-
-  /**
-   * Tests against type coerced equals (same value after type casting) using ==
-   *
-   * @param $expected The expected value to be tested against.
-   */
-  public function to_equal($expected) {
-    $this->report($this->value == $expected, 'to equal', $expected);
-  }
-
-  /**
-   * Tests against logical inequivalence (different value or different type) using !==
-   *
-   * @param $expected The expected value to be tested against.
-   */
-  // public function to_not_be($expected) {
-  //   $this->report($this->value !== $expected, 'to not be equivalent to', $expected);
-  // }
-
-  /**
-   * Tests against type coerced not equals (not the same value after type casting) using !=
-   *
-   * @param $expected The expected value to be tested against.
-   */
-  public function to_not_equal($expected) {
-    $this->report($this->value != $expected, 'to not equal', $expected);
-  }
-
-  /**
-   * Tests that the computed value is strictly the boolean value true.
-   *
-   */
-  public function to_be_true() {
-    $this->report($this->value === true, 'to be true');
-  }
-
-  /**
-   * Tests that the computed value is true after type coercion.
-   *
-   */
-  public function to_be_truthy() {
-    $this->report($this->value, 'to be truthy');
-  }
-
-  /**
-   * Tests that the computed value is strictly the boolean value false.
-   *
-   */
-  public function to_be_false() {
-    $this->report($this->value === false, 'to be false');
-  }
-
-  /**
-   * Tests that the computed value is false after type coercion.
-   *
-   */
-  public function to_be_falsy() {
-    $this->report(! $this->value, 'to be falsy');
-  }
-
-  public function to_be_falsey() {
-    $this->report(! $this->value, 'to be falsey');
-  }
-
-  /**
    * Tests against greater than using >
    *
    * @param $expected The expected value to be tested against.
@@ -182,47 +100,6 @@ class Tester {
   }
 
   /**
-   * Tests whether the supplied function doesn't throw any exception.
-   *
-   */
-  public function not_to_throw() {
-    $result = true;
-    $name = '';
-
-    if (is_callable($this->value)) {
-      try {
-        $this->value->__invoke();
-      } catch (\Exception $e) {
-        $result = false;
-        $name = get_class($e);
-      }
-    }
-
-    $this->report($result, 'not to throw but threw', $name);
-  }
-
-  /**
-   * Tests whether the supplied function throws the expected exception.
-   *
-   * @param $expected The name of the expected exception as a string.
-   */
-  public function to_throw($expected) {
-    $result = false;
-
-    if (is_callable($this->value)) {
-      try {
-        $this->value->__invoke();
-      } catch (\Exception $e) {
-        if (is_a($e, $expected)) {
-          $result = true;
-        }
-      }
-    }
-
-    $this->report($result, 'to throw', $expected);
-  }
-
-  /**
    * Reports whether the test passed or failed.
    *
    * @param $result A truthy value will cause a "pass" to be reported, otherwise "fail"
@@ -242,4 +119,7 @@ class Tester {
 }
 
 Tester::register_matcher('Sphec\Matchers\IdenticalMatcher');
-
+Tester::register_matcher('Sphec\Matchers\DoubleEqualMatcher');
+Tester::register_matcher('Sphec\Matchers\TruthyMatcher');
+Tester::register_matcher('Sphec\Matchers\FalseyMatcher');
+Tester::register_matcher('Sphec\Matchers\ThrowsMatcher');

@@ -4,12 +4,12 @@ specify Sphec\Mocks\Double
       @double = new Sphec\Mocks\Double;
 
     it always returns false when no legal functions have been added
-      expect(@double->__sphec_is_legal_function('foo'))->to_be_false();
-      expect(@double->__sphec_is_legal_function('blah'))->to_be_false();
+      expect(@double->__sphec_is_legal_function('foo'))->to_be(false);
+      expect(@double->__sphec_is_legal_function('blah'))->to_be(false);
 
     it returns true for a function that has been added
       @double->__sphec_add_legal_function('foo');
-      expect(@double->__sphec_is_legal_function('foo'))->to_be_true();
+      expect(@double->__sphec_is_legal_function('foo'))->to_be(true);
 
     it throws an exception if you call a method that isn't legal
       $double = @double;
@@ -70,7 +70,7 @@ specify Sphec\Mocks\Double
   describe test_double
     it returns a Double object
       $double = test_double();
-      expect($double instanceof \Sphec\Mocks\Double)->to_be_true();
+      expect($double instanceof \Sphec\Mocks\Double)->to_be(true);
 
     it has an anonymous sphec name when passed no arguments
       $double = test_double();

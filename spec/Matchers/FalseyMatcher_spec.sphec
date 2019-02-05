@@ -1,0 +1,16 @@
+specify Sphec\Matchers\FalseyMatcher
+  it returns false on true
+    $subject = new Sphec\Matchers\FalseyMatcher(true);
+    expect($subject->matches())->to_be(false);
+
+  it returns false on a truthy value
+    $subject = new Sphec\Matchers\FalseyMatcher(1);
+    expect($subject->matches())->to_be(false);
+
+  it returns true on false
+    $subject = new Sphec\Matchers\FalseyMatcher(false);
+    expect($subject->matches())->to_be(true);
+
+  it returns true on a falsey value
+    $subject = new Sphec\Matchers\FalseyMatcher(0);
+    expect($subject->matches())->to_be(true);

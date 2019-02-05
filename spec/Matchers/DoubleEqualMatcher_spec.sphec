@@ -1,0 +1,28 @@
+specify Sphec\Matchers\DoubleEqualMatcher
+  when the actual value is coercible
+    before
+      @subject = new Sphec\Matchers\DoubleEqualMatcher(3);
+
+    describe matches
+      it returns true when passed the same value and type
+        expect(@subject->matches(3))->to_be_truthy();
+
+      it returns false when passed a different value
+        expect(@subject->matches(4))->to_be_falsey();
+
+      it returns true when passed logically the same value but different type
+        expect(@subject->matches(3.0))->to_be_truthy();
+
+  when the actual value is an object
+    before
+      @actual = test_double();
+      @subject = new Sphec\Matchers\DoubleEqualMatcher(@actual);
+
+    describe matches
+      it returns true when passed the a reference to the same object
+        $expected = @actual;
+        expect(@subject->matches($expected))->to_be_truthy();
+
+      it returns true when passed a similar object but a different instance
+        $expected = test_double();
+        expect(@subject->matches($expected))->to_be_truthy();

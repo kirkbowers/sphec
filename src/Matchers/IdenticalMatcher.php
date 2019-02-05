@@ -15,6 +15,6 @@ class IdenticalMatcher extends Matcher {
   }
 
   public function failure_message_when_negated() {
-    return "expected $this->actual not to be identical to $this->expected";
+    return "  expected\n$this->actual\n  not to be identical to\n$this->expected";
   }
 }

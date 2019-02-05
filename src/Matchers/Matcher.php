@@ -10,4 +10,12 @@ abstract class Matcher {
   abstract public function matches($expected);
   abstract public function failure_message();
   abstract public function failure_message_when_negated();
+
+  protected function to_string($arg) {
+    if (is_array($arg)) {
+      return json_encode($arg);
+    } else {
+      return (string) $arg;
+    }
+  }
 }
