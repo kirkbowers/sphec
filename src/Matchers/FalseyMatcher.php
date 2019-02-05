@@ -5,7 +5,7 @@ namespace Sphec\Matchers;
 class FalseyMatcher extends Matcher {
   const ALIASES = ['be_falsey', 'be_falsy'];
 
-  public function matches($expected = null) {
+  public function matches(...$args) {
     return !$this->actual;
   }
 

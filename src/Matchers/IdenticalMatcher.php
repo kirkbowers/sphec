@@ -5,9 +5,9 @@ namespace Sphec\Matchers;
 class IdenticalMatcher extends Matcher {
   const ALIASES = ['be', 'be_equivalent', 'be_equivalent_to', 'be_identical', 'be_identical_to'];
 
-  public function matches($expected) {
-    $this->expected = $expected;
-    return $this->actual === $expected;
+  public function matches(...$args) {
+    $this->expected = $args[0];
+    return $this->actual === $this->expected;
   }
 
   public function failure_message() {

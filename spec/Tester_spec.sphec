@@ -17,8 +17,7 @@ specify Sphec\Tester
 
       Sphec\Tester::register_matcher('Sphec_Tester_spec_FakeMatcher');
 
-      @actual = new \Sphec\Mocks\Double('actual');
-      // @actual = test_double('actual');
+      @actual = test_double('actual');
       @reporter = test_double('reporter', ['pass' => null, 'fail' => null]);
 
       @subject = new Sphec\Tester(@actual, @reporter);

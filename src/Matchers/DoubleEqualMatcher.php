@@ -5,9 +5,9 @@ namespace Sphec\Matchers;
 class DoubleEqualMatcher extends Matcher {
   const ALIASES = ['equal', 'eq'];
 
-  public function matches($expected) {
-    $this->expected = $expected;
-    return $this->actual == $expected;
+  public function matches(...$args) {
+    $this->expected = $args[0];
+    return $this->actual == $this->expected;
   }
 
   public function failure_message() {

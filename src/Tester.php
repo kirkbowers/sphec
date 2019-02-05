@@ -64,42 +64,6 @@ class Tester {
   }
 
   /**
-   * Tests against greater than using >
-   *
-   * @param $expected The expected value to be tested against.
-   */
-  public function to_be_greater_than($expected) {
-    $this->report($this->value > $expected, 'to be greater than', $expected);
-  }
-
-  /**
-   * Tests against greater than or equal using >=
-   *
-   * @param $expected The expected value to be tested against.
-   */
-  public function to_be_greater_than_or_equal($expected) {
-    $this->report($this->value >= $expected, 'to be greater than or equal', $expected);
-  }
-
-  /**
-   * Tests against less than using <
-   *
-   * @param $expected The expected value to be tested against.
-   */
-  public function to_be_less_than($expected) {
-    $this->report($this->value < $expected, 'to be less than', $expected);
-  }
-
-  /**
-   * Tests against less than or equal using <=
-   *
-   * @param $expected The expected value to be tested against.
-   */
-  public function to_be_less_than_or_equal($expected) {
-    $this->report($this->value <= $expected, 'to be less than or equal', $expected);
-  }
-
-  /**
    * Reports whether the test passed or failed.
    *
    * @param $result A truthy value will cause a "pass" to be reported, otherwise "fail"
@@ -123,3 +87,4 @@ Tester::register_matcher('Sphec\Matchers\DoubleEqualMatcher');
 Tester::register_matcher('Sphec\Matchers\TruthyMatcher');
 Tester::register_matcher('Sphec\Matchers\FalseyMatcher');
 Tester::register_matcher('Sphec\Matchers\ThrowsMatcher');
+Tester::register_matcher('Sphec\Matchers\CompareMatcher');

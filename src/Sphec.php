@@ -1,6 +1,8 @@
 <?php
 namespace Sphec;
 
+require_once 'Mocks/functions.php';
+
 /**
  * The control class for building specifications.
  *
@@ -11,7 +13,7 @@ class Sphec {
 
   public static $expector = NULL;
 
-  /** 
+  /**
    * The entry point for building a specification.
    *
    * @param $label A string label of what is being specified in this spec.  Usually it
@@ -21,11 +23,11 @@ class Sphec {
    *   the mojo that a Context does (describe, it, etc.).
    */
   public static function specify($label, $block) {
-    $spec = new Context($label, $block, '', NULL, self::$expector);  
-    
-    self::$sphecs[] = $spec;  
+    $spec = new Context($label, $block, '', NULL, self::$expector);
+
+    self::$sphecs[] = $spec;
   }
-  
+
   public static function run() {
     foreach (self::$sphecs as $spec) {
       $spec->run();

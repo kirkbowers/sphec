@@ -1,8 +1,7 @@
 specify Sphec\Example
   before
     @label = 'label';
-    @block = new \Sphec\Mocks\Double('block', ['__invoke' => null]);
-    // @block = test_double('block', ['__invoke' => null]);
+    @block = test_double('block', ['__invoke' => null]);
     @indent = '';
     @expector = test_double('expector');
     @expector->output = null;

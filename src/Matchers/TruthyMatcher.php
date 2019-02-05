@@ -5,7 +5,7 @@ namespace Sphec\Matchers;
 class TruthyMatcher extends Matcher {
   const ALIASES = ['be_truthy'];
 
-  public function matches($expected = null) {
+  public function matches(...$args) {
     return !!$this->actual;
   }
 

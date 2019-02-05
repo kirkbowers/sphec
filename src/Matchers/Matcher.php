@@ -7,7 +7,7 @@ abstract class Matcher {
     $this->actual = $actual;
   }
 
-  abstract public function matches($expected);
+  abstract public function matches(...$args);
   abstract public function failure_message();
   abstract public function failure_message_when_negated();
 

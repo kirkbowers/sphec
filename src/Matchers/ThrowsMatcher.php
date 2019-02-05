@@ -5,7 +5,9 @@ namespace Sphec\Matchers;
 class ThrowsMatcher extends Matcher {
   const ALIASES = ['throw'];
 
-  public function matches($expected = null) {
+  public function matches(...$args) {
+    $expected = null;
+    if (sizeof($args) > 0) $expected = $args[0];
     $this->expected = $expected;
     $result = false;
 
