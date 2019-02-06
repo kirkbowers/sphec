@@ -1,0 +1,12 @@
+specify Sphec\Matchers\FailedMatch
+  before
+    @subject = new Sphec\Matchers\FailedMatch;
+
+  it evaluates as a falsey value
+    expect(@subject)->not_to_succeed_matching();
+
+  it quietly allows any methods to be called on it
+    expect({ @subject->anything(); })->not_to_throw('\Exception');
+
+  it evaluates as a falsey value when any method is called on it
+    expect(@subject->anything())->not_to_succeed_matching();

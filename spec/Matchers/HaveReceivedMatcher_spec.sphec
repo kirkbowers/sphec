@@ -1,0 +1,56 @@
+specify Sphec\Matchers\HaveReceivedMatcher
+  when simply matching with no chained methods
+    describe matches
+      before
+        @double = test_double('test', ['legal_method' => true, 'other_method' => true]);
+        @subject = new Sphec\Matchers\HaveReceivedMatcher(@double);
+
+      it returns a falsey value when a legal method on a test double has not been called
+        expect(@subject->matches('legal_method'))->not_to_succeed_matching();
+
+      it returns a truthy value when a legal method on a test double has been called once
+        @double->legal_method();
+        expect(@subject->matches('legal_method'))->to_succeed_matching();
+
+      it returns a truthy value when a legal method on a test double has been called more than once
+        @double->legal_method();
+        @double->legal_method();
+        expect(@subject->matches('legal_method'))->to_succeed_matching();
+
+      it returns a falsey value when a different legal method on a test double has been called
+        @double->other_method();
+        expect(@subject->matches('legal_method'))->not_to_succeed_matching();
+
+    describe failure_message
+      // TODO
+
+    describe failure_message_when_negated
+      // TODO
+
+  when chained with once
+    describe matches
+      before
+        @double = test_double('test', ['legal_method' => true, 'other_method' => true]);
+        @subject = new Sphec\Matchers\HaveReceivedMatcher(@double);
+
+      it returns a falsey value when a legal method on a test double has not been called
+        expect(@subject->matches('legal_method')->once())->not_to_succeed_matching();
+
+      it returns a truthy value when a legal method on a test double has been called once
+        @double->legal_method();
+        expect(@subject->matches('legal_method')->once())->to_succeed_matching();
+
+      it returns a truthy value when a legal method on a test double has been called more than once
+        @double->legal_method();
+        @double->legal_method();
+        expect(@subject->matches('legal_method')->once())->not_to_succeed_matching();
+
+      it returns a falsey value when a different legal method on a test double has been called
+        @double->other_method();
+        expect(@subject->matches('legal_method')->once())->not_to_succeed_matching();
+
+    describe failure_message
+      // TODO
+
+    describe failure_message_when_negated
+      // TODO

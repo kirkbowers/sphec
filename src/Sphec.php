@@ -2,6 +2,7 @@
 namespace Sphec;
 
 require_once 'Mocks/functions.php';
+require_once 'Matchers/functions.php';
 
 /**
  * The control class for building specifications.
@@ -26,6 +27,10 @@ class Sphec {
     $spec = new Context($label, $block, '', NULL, self::$expector);
 
     self::$sphecs[] = $spec;
+  }
+
+  public static function register_matcher($matcher) {
+    Tester::register_matcher($matcher);
   }
 
   public static function run() {

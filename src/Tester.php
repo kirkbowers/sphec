@@ -39,21 +39,21 @@ class Tester {
       $alias = $matches[1];
       $matcher_class = self::matcher_for_alias($alias);
       $matcher = new $matcher_class($this->value);
-      $result = !$matcher->matches(...$args);
+      $result = is_or_evaluates_to_falsey($matcher->matches(...$args));
       $this->report(!$matcher->matches(...$args), $matcher->failure_message(), ...$args);
       return $result;
     } else if (preg_match('/^to_(.*)$/', $method, $matches)) {
       $alias = $matches[1];
       $matcher_class = self::matcher_for_alias($alias);
       $matcher = new $matcher_class($this->value);
-      $result = $matcher->matches(...$args);
+      $result = !is_or_evaluates_to_falsey($matcher->matches(...$args));
       $this->report($result, $matcher->failure_message());
       return $result;
     } else if (preg_match('/^not_to_(.*)$/', $method, $matches)) {
       $alias = $matches[1];
       $matcher_class = self::matcher_for_alias($alias);
       $matcher = new $matcher_class($this->value);
-      $result = !$matcher->matches(...$args);
+      $result = is_or_evaluates_to_falsey($matcher->matches(...$args));
       $this->report(!$matcher->matches(...$args), $matcher->failure_message(), ...$args);
       return $result;
     }
