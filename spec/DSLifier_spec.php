@@ -132,6 +132,43 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
     });
   });
 
+  $spec->describe('process_let', function($spec) {
+    $spec->it('returns false when it does not match a let', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $result = $dsl->process_let('before');
+      $expected = false;
+      $spec->expect($result)->to_be($expected);
+    });
+
+    $spec->it('returns the line converted with the stuff right of the equals in a function', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $result = $dsl->process_let('let foo = 42;');
+      $expected = "\$spec->let('foo', function(\$spec) { return 42;";
+      $spec->expect($result)->to_be($expected);
+    });
+
+    $spec->it('strips off an optional at sign', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $result = $dsl->process_let('let @foo = 42;');
+      $expected = "\$spec->let('foo', function(\$spec) { return 42;";
+      $spec->expect($result)->to_be($expected);
+    });
+
+    $spec->it('interpolates at signs right of the equals', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $result = $dsl->process_let('let foo = @blah + 2;');
+      $expected = "\$spec->let('foo', function(\$spec) { return \$spec->blah + 2;";
+      $spec->expect($result)->to_be($expected);
+    });
+
+    $spec->it('does not insert "return" or close the function when nothing is right of the equals', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $result = $dsl->process_let('let @foo =');
+      $expected = "\$spec->let('foo', function(\$spec) {";
+      $spec->expect($result)->to_be($expected);
+    });
+  });
+
 
 
   $spec->describe('get_php', function($spec) {
@@ -463,6 +500,59 @@ Sphec\\Sphec::specify('MyClass', function(\$spec) {
 //     })->to_throw('Exception');
 
     \$spec->expect(\$spec->foo - 1)->to_be(\$spec->blech);
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
+
+    $spec->it('handles let commands that are on a single line', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  let blah = 42;
+  before
+    @foo = 3;
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->let('blah', function(\$spec) { return 42;
+  });
+  \$spec->before(function(\$spec) {
+    \$spec->foo = 3;
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
+
+    $spec->it('handles let commands that are on multiple lines', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  let blech = 40;
+  let blah =
+    \$result = @blech + 2;
+    return \$result;
+  before
+    @foo = 3;
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->let('blech', function(\$spec) { return 40;
+  });
+  \$spec->let('blah', function(\$spec) {
+    \$result = \$spec->blech + 2;
+    return \$result;
+  });
+  \$spec->before(function(\$spec) {
+    \$spec->foo = 3;
   });
 });
 

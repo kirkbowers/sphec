@@ -10,7 +10,8 @@ class Context extends Runnable {
   private $_tests = array();
   private $_befores = array();
   private $_afters = array();
-  
+  private $_lazy_variables = array();
+
   function __construct($label, $block, $indent = '', $parent = NULL, $expector = NULL) {
     parent::__construct($label, $block, $indent, $parent);
     if ($expector) {
@@ -26,60 +27,73 @@ class Context extends Runnable {
   /**
    * Creates a new subcontext.
    *
-   * Usually this is used to group together tests on a sub-feature such as a method of 
+   * Usually this is used to group together tests on a sub-feature such as a method of
    * a class.
    *
    * @param $label A string label of what is being described.
    * @param $block An anonymous function that performs all the specifying and testing
-   *    for this subcontext.  It should take one parameter, which will be this Context 
+   *    for this subcontext.  It should take one parameter, which will be this Context
    *    instance that can perform all
    *    the mojo that a Context does (describe, it, etc.).
    */
   public function describe($label, $block) {
     return $this->_tests[] = new Context($label, $block, $this->_indent . '  ', $this);
   }
-  
+
   /**
    * Creates a new subcontext.
    *
    * This is an alias to `describe`.  It has a different name just to make things in
-   * your spec files a little more human readable.  It's intended to be used in a 
+   * your spec files a little more human readable.  It's intended to be used in a
    * different context than `describe`.  Usually it is used to group together tests
    * that share a set of preconditions.  They will share a `before` set up.
    *
    * @param $label A string label of what is being described.
    * @param $block An anonymous function that performs all the specifying and testing
-   *    for this subcontext.  It should take one parameter, which will be this Context 
+   *    for this subcontext.  It should take one parameter, which will be this Context
    *    instance that can perform all
    *    the mojo that a Context does (describe, it, etc.).
    */
   public function context( $label, $block) {
     return $this->describe($label, $block);
-  }  
-  
+  }
+
   /**
    * Creates a new before action.  It will be run before every example in this context.
    *
    * @param $block An anonymous function that performs all the setup
-   *    for this context.  It should take one parameter, which will be the Example 
+   *    for this context.  It should take one parameter, which will be the Example
    *    instance that will consume any local variables set up.
    */
   public function before($block) {
     return $this->_befores[] = $block;
   }
-  
+
   /**
    * Creates a new after action.  It will be run after every example in this context.
    *
    * @param $block An anonymous function that performs all the tear down
-   *    for this context.  It should take one parameter, which will be the Example 
+   *    for this context.  It should take one parameter, which will be the Example
    *    instance for which tear down is needed.
    */
   public function after($block) {
     return $this->_afters[] = $block;
   }
-  
-  
+
+  public function let($variable, $block) {
+    $this->_lazy_variables[$variable] = $block;
+  }
+
+  public function get_lazy_variable($scope, $variable) {
+    if (isset($this->_lazy_variables[$variable]) && is_callable($this->_lazy_variables[$variable])) {
+      return $this->_lazy_variables[$variable]($scope);
+    } if ($this->_parent) {
+      return $this->_parent->get_lazy_variable($scope, $variable);
+    } else {
+      return null;
+    }
+  }
+
   /**
    * Creates a new example.
    *
@@ -89,13 +103,13 @@ class Context extends Runnable {
    *
    * @param $label A string label of what is being expected.
    * @param $block An anonymous function that performs all the testing
-   *    for this example.  It should take one parameter, which will be the Example 
+   *    for this example.  It should take one parameter, which will be the Example
    *    instance that can perform `expect` methods.
    */
   public function it($label, $block) {
     return $this->_tests[] = new Example($label, $block, $this->_indent . '  ', $this);
   }
-  
+
   /**
    * Runs all the befores of containing contexts and then this context's befores in the
    * order they were added.
@@ -107,12 +121,12 @@ class Context extends Runnable {
     if ($this->_parent) {
       $this->_parent->run_befores($scope);
     }
-    
+
     foreach ($this->_befores as $before) {
       $before($scope);
     }
   }
-  
+
   /**
    * Runs all the befores of containing contexts and then this context's befores in the
    * order they were added.
@@ -120,7 +134,7 @@ class Context extends Runnable {
    * @param $scope The object scope of an Example being run for which local variables
    *    need to be torn down.
    */
-  public function run_afters($scope) {    
+  public function run_afters($scope) {
     foreach ($this->_afters as $after) {
       $after($scope);
     }
@@ -129,15 +143,15 @@ class Context extends Runnable {
       $this->_parent->run_afters($scope);
     }
   }
-  
+
   /**
    * Runs all the tests in this scope.
    */
   public function run() {
     if ($this->_expector->output && $this->_expector->output->isVerbose()) {
-      $this->_expector->output->writeln($this->_indent . $this->_label); 
+      $this->_expector->output->writeln($this->_indent . $this->_label);
     }
-    
+
     foreach ($this->_tests as $test) {
       $test->run();
     }

@@ -42,7 +42,13 @@ namespace Sphec\Mocks {
     }
 
     public function __sphec_function_call_count($name) {
-      return $this->_function_call_counts[$name];
+      if ($this->__sphec_is_legal_function($name)) {
+        return $this->_function_call_counts[$name];
+      } else {
+        // TODO:
+        // Should this throw an exception?
+        return 0;
+      }
     }
 
     public function __call($name, $arguments) {
@@ -52,6 +58,10 @@ namespace Sphec\Mocks {
       } else {
         throw new UnstubbedMethodException("Call of unstubbed method $name on test double $this->_name");
       }
+    }
+
+    public function __toString() {
+      return "test_double($this->_name)";
     }
   }
 }

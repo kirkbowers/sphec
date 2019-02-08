@@ -43,4 +43,12 @@ class Example extends Runnable {
       $this->_parent->run_afters($this);
     }
   }
+
+  public function __get($variable) {
+    if (!property_exists($this, $variable)) {
+      $this->$variable = $this->_parent->get_lazy_variable($this, $variable);
+    }
+
+    return $this->$variable;
+  }
 }

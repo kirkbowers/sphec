@@ -5,13 +5,13 @@ specify Sphec\Matchers\DoubleEqualMatcher
 
     describe matches
       it returns true when passed the same value and type
-        expect(@subject->matches(3))->to_be_truthy();
+        expect(@subject->matches(3))->to_succeed_matching();
 
       it returns false when passed a different value
-        expect(@subject->matches(4))->to_be_falsey();
+        expect(@subject->matches(4))->not_to_succeed_matching();
 
       it returns true when passed logically the same value but different type
-        expect(@subject->matches(3.0))->to_be_truthy();
+        expect(@subject->matches(3.0))->to_succeed_matching();
 
   when the actual value is an object
     before
@@ -21,8 +21,8 @@ specify Sphec\Matchers\DoubleEqualMatcher
     describe matches
       it returns true when passed the a reference to the same object
         $expected = @actual;
-        expect(@subject->matches($expected))->to_be_truthy();
+        expect(@subject->matches($expected))->to_succeed_matching();
 
       it returns true when passed a similar object but a different instance
         $expected = test_double();
-        expect(@subject->matches($expected))->to_be_truthy();
+        expect(@subject->matches($expected))->to_succeed_matching();

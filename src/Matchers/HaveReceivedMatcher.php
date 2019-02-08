@@ -26,7 +26,7 @@ class HaveReceivedMatcher extends Matcher {
   }
 
   public function failure_message_when_negated() {
-    return "  expected\n$this->actual\n  not to be truthy";
+    return "  expected\n$this->actual\n  not to have received " . $this->expected . "()";
   }
 
   //-------------------------------------------------------------------------------------------

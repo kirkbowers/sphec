@@ -53,6 +53,19 @@ class DSLifier {
     return $replacement . "(function(\$spec) {";
   }
 
+  public function process_let($line) {
+    if (preg_match('/^let\s+\@?(\w+)\s*=\s*(.*)$/', $line, $matches)) {
+      if ($matches[2] == '') {
+        return "\$spec->let('" . $matches[1] . "', function(\$spec) {";
+      } else {
+        $right_of_equals = $this->process_local_vars($matches[2]);
+        return "\$spec->let('" . $matches[1] . "', function(\$spec) { return " . $right_of_equals;
+      }
+    } else {
+      return false;
+    }
+  }
+
   public function process_local_vars($line) {
     $result = preg_replace('/@(\w+)/', "\$spec->$1", $line);
     $result = preg_replace('/__DIR__/', "'$this->dirname'", $result);
@@ -84,7 +97,6 @@ class DSLifier {
     $result = "\$spec->expect(function() use (\$spec) {" . $matches[1];
     return $this->process_local_vars($result);
   }
-
 
 
   private function advance_indent($this_indent) {
@@ -217,6 +229,9 @@ class DSLifier {
         } else if ($matches = $this->matches_expect($command)) {
           $this->handle_indent($this_indent, false, $command);
           $this->result .= $this_indent . $this->process_expect($matches) . "\n";
+        } else if ($result = $this->process_let($command)) {
+          $this->handle_indent($this_indent);
+          $this->result .= $this_indent . $result . "\n";
         } else {
           $this->handle_indent($this_indent, false, $command);
           $this->result .= $this_indent . $this->process_local_vars($command) . "\n";

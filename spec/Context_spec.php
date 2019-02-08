@@ -171,4 +171,83 @@ Sphec\Sphec::specify('Context', function($spec) {
       ));
     });
   });
+
+  $spec->describe('get_lazy_variable', function($spec) {
+    $spec->it('returns null when there is no "let" for the variable and no parent', function($spec) {
+      $block = function($spec) {
+      };
+      $parent = null;
+      $context = new Sphec\Context('Context', $block, '', $parent);
+      $context->quiet = true;
+      $scope = test_double('scope');
+
+      $context->run();
+      $spec->expect($context->get_lazy_variable($scope, 'foo'))->to_be(null);
+    });
+
+    $spec->it('returns the computed value when there is a "let" for the variable and no parent', function($spec) {
+      $block = function($spec) {
+        $spec->let('foo', function($spec) {
+          return 42;
+        });
+      };
+      $parent = null;
+      $context = new Sphec\Context('Context', $block, '', $parent);
+      $context->quiet = true;
+      $scope = test_double('scope');
+
+      $context->run();
+      $spec->expect($context->get_lazy_variable($scope, 'foo'))->to_be(42);
+    });
+
+    $spec->it('computes a value using other variables in the passed scope', function($spec) {
+      $block = function($spec) {
+        $spec->let('foo', function($spec) {
+          return $spec->forty + 2;
+        });
+      };
+      $parent = null;
+      $context = new Sphec\Context('Context', $block, '', $parent);
+      $context->quiet = true;
+      $scope = test_double('scope');
+      $scope->forty = 40;
+
+      $context->run();
+      $spec->expect($context->get_lazy_variable($scope, 'foo'))->to_be(42);
+    });
+
+    $spec->it('cascades to its parent when it does not have a let for the variable', function($spec) {
+      $block = function($spec) {
+      };
+      # TODO:
+      # Check explicitly for parameter when available
+      $parent = test_double('Parent context', ['get_lazy_variable' => 42]);
+      $parent->_expector = test_double('expector');
+      $parent->_expector->output = null;
+      $context = new Sphec\Context('Context', $block, '', $parent);
+      $context->quiet = true;
+      $scope = test_double('scope');
+
+      $context->run();
+      $spec->expect($context->get_lazy_variable($scope, 'foo'))->to_be(42);
+    });
+
+    $spec->it('masks its parent when it does have a let for the variable', function($spec) {
+      $block = function($spec) {
+        $spec->let('foo', function($spec) {
+          return 42;
+        });
+      };
+      $parent = test_double('Parent context', ['get_lazy_variable' => 'masked']);
+      $parent->_expector = test_double('expector');
+      $parent->_expector->output = null;
+      $context = new Sphec\Context('Context', $block, '', $parent);
+      $context->quiet = true;
+      $scope = test_double('scope');
+
+      $context->run();
+      $spec->expect($context->get_lazy_variable($scope, 'foo'))->to_be(42);
+      $spec->expect($parent)->not_to_have_received('get_lazy_variable');
+    });
+  });
 });

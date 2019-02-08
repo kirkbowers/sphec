@@ -1,17 +1,16 @@
-specify Matcher functions
-  before
-    if (!class_exists('Sphec_Matcher_functions_spec_Falsey_Object')) {
-      class Sphec_Matcher_functions_spec_Falsey_Object {
-        public function __invoke() {
-          return false;
-        }
-
-        public function __toString() {
-          return 'test falsey object';
-        }
-      }
+if (!class_exists('Sphec_Matcher_functions_spec_FalseyObject')) {
+  class Sphec_Matcher_functions_spec_FalseyObject {
+    public function __invoke() {
+      return false;
     }
 
+    public function __toString() {
+      return 'test falsey object';
+    }
+  }
+}
+
+specify Matcher functions
   describe is_or_evaluates_to_falsey
     it returns false for true
       expect(is_or_evaluates_to_falsey(true))->to_be_falsey();
@@ -26,7 +25,7 @@ specify Matcher functions
       expect(is_or_evaluates_to_falsey([]))->to_be_truthy();
 
     it returns true for an object that can be called and evaluates to false
-      $falsey_object = new Sphec_Matcher_functions_spec_Falsey_Object;
+      $falsey_object = new Sphec_Matcher_functions_spec_FalseyObject;
       expect(is_or_evaluates_to_falsey($falsey_object))->to_be_truthy();
 
   describe succeeds_matching
@@ -34,5 +33,5 @@ specify Matcher functions
       expect(succeeds_matching('some string'))->to_be_truthy();
 
     it returns false for an object that can be called and evaluates to false
-      $falsey_object = new Sphec_Matcher_functions_spec_Falsey_Object;
+      $falsey_object = new Sphec_Matcher_functions_spec_FalseyObject;
       expect(succeeds_matching($falsey_object))->to_be_falsey();

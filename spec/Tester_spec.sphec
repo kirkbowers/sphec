@@ -12,6 +12,10 @@ specify Sphec\Tester
           public function failure_message() {
             return 'fake failure';
           }
+
+          public function failure_message_when_negated() {
+            return 'fake failure';
+          }
         }
       }
 

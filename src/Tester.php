@@ -39,22 +39,22 @@ class Tester {
       $alias = $matches[1];
       $matcher_class = self::matcher_for_alias($alias);
       $matcher = new $matcher_class($this->value);
-      $result = is_or_evaluates_to_falsey($matcher->matches(...$args));
-      $this->report(!$matcher->matches(...$args), $matcher->failure_message(), ...$args);
+      $result = !succeeds_matching($matcher->matches(...$args));
+      $this->report($result, $matcher->failure_message_when_negated(), ...$args);
       return $result;
     } else if (preg_match('/^to_(.*)$/', $method, $matches)) {
       $alias = $matches[1];
       $matcher_class = self::matcher_for_alias($alias);
       $matcher = new $matcher_class($this->value);
-      $result = !is_or_evaluates_to_falsey($matcher->matches(...$args));
+      $result = succeeds_matching($matcher->matches(...$args));
       $this->report($result, $matcher->failure_message());
       return $result;
     } else if (preg_match('/^not_to_(.*)$/', $method, $matches)) {
       $alias = $matches[1];
       $matcher_class = self::matcher_for_alias($alias);
       $matcher = new $matcher_class($this->value);
-      $result = is_or_evaluates_to_falsey($matcher->matches(...$args));
-      $this->report(!$matcher->matches(...$args), $matcher->failure_message(), ...$args);
+      $result = !succeeds_matching($matcher->matches(...$args));
+      $this->report($result, $matcher->failure_message_when_negated(), ...$args);
       return $result;
     }
 
@@ -88,3 +88,4 @@ Tester::register_matcher('Sphec\Matchers\TruthyMatcher');
 Tester::register_matcher('Sphec\Matchers\FalseyMatcher');
 Tester::register_matcher('Sphec\Matchers\ThrowsMatcher');
 Tester::register_matcher('Sphec\Matchers\CompareMatcher');
+Tester::register_matcher('Sphec\Matchers\HaveReceivedMatcher');
