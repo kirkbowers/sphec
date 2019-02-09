@@ -1,8 +1,9 @@
 specify Sphec\Matchers\HaveReceivedMatcher
   when simply matching with no chained methods
+    let double = test_double('test', ['legal_method' => true, 'other_method' => true]);
+    let matcher = new Sphec\Matchers\HaveReceivedMatcher(@double);
+
     describe matches
-      let double = test_double('test', ['legal_method' => true, 'other_method' => true]);
-      let matcher = new Sphec\Matchers\HaveReceivedMatcher(@double);
       let subject = @matcher->matches('legal_method');
 
       it returns a falsey value when a legal method on a test double has not been called
@@ -22,15 +23,22 @@ specify Sphec\Matchers\HaveReceivedMatcher
         expect(@subject)->not_to_succeed_matching();
 
     describe failure_message
-      // TODO
+      it says expected to be called at least once
+        @matcher->matches('legal_method');
+        $expected = "Expected test_double(test) to have received legal_method() at least once but was called 0 times.";
+        expect(@matcher->failure_message())->to_eq($expected);
 
     describe failure_message_when_negated
-      // TODO
+      it says expected not to be called
+        @matcher->matches('legal_method');
+        $expected = "Expected test_double(test) not to have received legal_method().";
+        expect(@matcher->failure_message_when_negated())->to_eq($expected);
 
   when chained with once
+    let double = test_double('test', ['legal_method' => true, 'other_method' => true]);
+    let matcher = new Sphec\Matchers\HaveReceivedMatcher(@double);
+
     describe matches
-      let double = test_double('test', ['legal_method' => true, 'other_method' => true]);
-      let matcher = new Sphec\Matchers\HaveReceivedMatcher(@double);
       let subject = @matcher->matches('legal_method')->once();
 
       it returns a falsey value when a legal method on a test double has not been called
@@ -50,7 +58,103 @@ specify Sphec\Matchers\HaveReceivedMatcher
         expect(@subject)->not_to_succeed_matching();
 
     describe failure_message
-      // TODO
+      it says expected to be called once but was called zero times when not called at all
+        @matcher->matches('legal_method')->once();
+        $expected = "Expected test_double(test) to have received legal_method() once but was called 0 times.";
+        expect(@matcher->failure_message())->to_eq($expected);
+
+      it says expected to be called once but was called two times when called twice
+        @double->legal_method();
+        @double->legal_method();
+        @matcher->matches('legal_method')->once();
+        $expected = "Expected test_double(test) to have received legal_method() once but was called 2 times.";
+        expect(@matcher->failure_message())->to_eq($expected);
 
     describe failure_message_when_negated
-      // TODO
+      it says expected not to be called
+        @matcher->matches('legal_method')->once();
+        $expected = "Expected test_double(test) not to have received legal_method().";
+        expect(@matcher->failure_message_when_negated())->to_eq($expected);
+
+  when chained with twice
+    let double = test_double('test', ['legal_method' => true, 'other_method' => true]);
+    let matcher = new Sphec\Matchers\HaveReceivedMatcher(@double);
+
+    describe matches
+      let subject = @matcher->matches('legal_method')->twice();
+
+      it returns a falsey value when a legal method on a test double has not been called
+        expect(@subject)->not_to_succeed_matching();
+
+      it returns a truthy value when a legal method on a test double has been called twice
+        @double->legal_method();
+        @double->legal_method();
+        expect(@subject)->to_succeed_matching();
+
+      it returns a falsey value when a legal method on a test double has been called only once
+        @double->legal_method();
+        expect(@subject)->not_to_succeed_matching();
+
+      it returns a falsey value when a different legal method on a test double has been called
+        @double->other_method();
+        expect(@subject)->not_to_succeed_matching();
+
+    describe failure_message
+      it says expected to be called twice but was called zero times when not called at all
+        @matcher->matches('legal_method')->twice();
+        $expected = "Expected test_double(test) to have received legal_method() twice but was called 0 times.";
+        expect(@matcher->failure_message())->to_eq($expected);
+
+      it says expected to be called twice but was called 1 time when called once
+        @double->legal_method();
+        @matcher->matches('legal_method')->twice();
+        $expected = "Expected test_double(test) to have received legal_method() twice but was called 1 time.";
+        expect(@matcher->failure_message())->to_eq($expected);
+
+    describe failure_message_when_negated
+      it says expected not to be called
+        @matcher->matches('legal_method')->twice();
+        $expected = "Expected test_double(test) not to have received legal_method().";
+        expect(@matcher->failure_message_when_negated())->to_eq($expected);
+
+  when chained with exactly n times
+    let double = test_double('test', ['legal_method' => true, 'other_method' => true]);
+    let matcher = new Sphec\Matchers\HaveReceivedMatcher(@double);
+
+    describe matches
+      let subject = @matcher->matches('legal_method')->exactly(3)->times();
+
+      it returns a falsey value when a legal method on a test double has not been called
+        expect(@subject)->not_to_succeed_matching();
+
+      it returns a truthy value when a legal method on a test double has been called 3 times
+        @double->legal_method();
+        @double->legal_method();
+        @double->legal_method();
+        expect(@subject)->to_succeed_matching();
+
+      it returns a falsey value when a legal method on a test double has been called only once
+        @double->legal_method();
+        expect(@subject)->not_to_succeed_matching();
+
+      it returns a falsey value when a different legal method on a test double has been called
+        @double->other_method();
+        expect(@subject)->not_to_succeed_matching();
+
+    describe failure_message
+      it says expected to be called twice but was called zero times when not called at all
+        @matcher->matches('legal_method')->exactly(3)->times();
+        $expected = "Expected test_double(test) to have received legal_method() exactly 3 times but was called 0 times.";
+        expect(@matcher->failure_message())->to_eq($expected);
+
+      it says expected to be called twice but was called 1 time when called once
+        @double->legal_method();
+        @matcher->matches('legal_method')->exactly(3)->times();
+        $expected = "Expected test_double(test) to have received legal_method() exactly 3 times but was called 1 time.";
+        expect(@matcher->failure_message())->to_eq($expected);
+
+    describe failure_message_when_negated
+      it says expected not to be called
+        @matcher->matches('legal_method')->exactly(3)->times();
+        $expected = "Expected test_double(test) not to have received legal_method().";
+        expect(@matcher->failure_message_when_negated())->to_eq($expected);

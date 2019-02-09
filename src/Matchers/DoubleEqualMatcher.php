@@ -12,7 +12,7 @@ class DoubleEqualMatcher extends Matcher {
 
   public function failure_message() {
     // return "  expected\n" . $this->to_string($this->actual) . "\n  to be equal to\n" . $this->to_string($this->expected);
-    return "  expected\n" . $this->to_string($this->actual);
+    return "Expected:\n  " . $this->to_string($this->actual) . "\nTo equal:\n  " . $this->to_string($this->expected) . "\n";
   }
 
   public function failure_message_when_negated() {
