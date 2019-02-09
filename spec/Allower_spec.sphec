@@ -1,0 +1,31 @@
+specify Sphec\Allower
+  when passed a test double in the constructor
+    let double = test_double('test');
+    let subject = new Sphec\Allower(@double);
+
+    describe to_receive
+      it adds a legal method on the test double
+        @subject->to_receive('foo');
+        expect({ @double->foo(); })->not_to_throw('Sphec\Mocks\UnstubbedMethodException');
+
+    describe to_receive and_return
+      it adds a legal method on the test double
+        @subject->to_receive('foo')->and_return(42);
+        expect(@double->foo())->to_be(42);
+
+  when used in the wild
+    let double = test_double('test');
+
+    when used in a before block
+      before
+        allow(@double)->to_receive('ultimate_question')->and_return(42);
+
+      it can be used in an example
+        expect(@double->ultimate_question())->to_be(42);
+        expect(@double)->to_have_received('ultimate_question');
+
+    when used in an example
+      it can be used in an example
+        allow(@double)->to_receive('ultimate_question')->and_return(42);
+        expect(@double->ultimate_question())->to_be(42);
+        expect(@double)->to_have_received('ultimate_question');

@@ -169,6 +169,21 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
     });
   });
 
+  $spec->describe('process_allow', function($spec) {
+    $spec->it('returns false when it does not match an allow', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $result = $dsl->process_allow('before');
+      $expected = false;
+      $spec->expect($result)->to_be($expected);
+    });
+
+    $spec->it('returns the line with the allow converted', function($spec) {
+      $dsl = new Sphec\DSLifier('');
+      $result = $dsl->process_allow('allow(@double)->to_receive("blah");');
+      $expected = "\$spec->allow(\$spec->double)->to_receive(\"blah\");";
+      $spec->expect($result)->to_be($expected);
+    });
+  });
 
 
   $spec->describe('get_php', function($spec) {
@@ -553,6 +568,28 @@ Sphec\\Sphec::specify('MyClass', function(\$spec) {
   });
   \$spec->before(function(\$spec) {
     \$spec->foo = 3;
+  });
+});
+
+EOF;
+
+      $dsl = new Sphec\DSLifier($input);
+      $spec->expect($dsl->get_php())->to_be($output);
+    });
+
+    $spec->it('handles allow commands', function($spec) {
+      $input = <<<EOF
+specify MyClass
+  before
+    @foo = test_double();
+    allow(@foo)->to_receive('blah');
+EOF;
+
+      $output = <<<EOF
+Sphec\\Sphec::specify('MyClass', function(\$spec) {
+  \$spec->before(function(\$spec) {
+    \$spec->foo = test_double();
+    \$spec->allow(\$spec->foo)->to_receive('blah');
   });
 });
 

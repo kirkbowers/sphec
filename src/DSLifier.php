@@ -66,6 +66,15 @@ class DSLifier {
     }
   }
 
+  public function process_allow($line) {
+    if (preg_match('/^allow\s*\((.*)$/', $line, $matches)) {
+      $result = "\$spec->allow(" . $matches[1];
+      return $this->process_local_vars($result);
+    } else {
+      return false;
+    }
+  }
+
   public function process_local_vars($line) {
     $result = preg_replace('/@(\w+)/', "\$spec->$1", $line);
     $result = preg_replace('/__DIR__/', "'$this->dirname'", $result);
@@ -231,6 +240,9 @@ class DSLifier {
           $this->result .= $this_indent . $this->process_expect($matches) . "\n";
         } else if ($result = $this->process_let($command)) {
           $this->handle_indent($this_indent);
+          $this->result .= $this_indent . $result . "\n";
+        } else if ($result = $this->process_allow($command)) {
+          $this->handle_indent($this_indent, false, $command);
           $this->result .= $this_indent . $result . "\n";
         } else {
           $this->handle_indent($this_indent, false, $command);

@@ -21,6 +21,10 @@ class Example extends Runnable {
     return $this->_expector->test($value, $this);
   }
 
+  public function allow($value) {
+    return new Allower($value);
+  }
+
   public function run() {
     $this->_parent->run_befores($this);
 

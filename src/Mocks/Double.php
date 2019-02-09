@@ -9,7 +9,7 @@ namespace Sphec\Mocks {
   class Double {
     private $_legal_functions = array();
     private $_function_call_counts = array();
-    private $_name = '(Anonymous)';
+    private $_name = '<Anonymous>';
 
     public function __construct($id = null, $legal_functions = null) {
       if (is_array($id)) {

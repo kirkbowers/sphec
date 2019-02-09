@@ -27,21 +27,38 @@ specify Sphec\Mocks\Double
       expect(@double->foo())->to_be(42);
 
   describe __sphec_name
-    it is (Anonymous) when nothing is passed to the constructor
+    it is <Anonymous> when nothing is passed to the constructor
       $double = new Sphec\Mocks\Double;
-      expect($double->__sphec_name())->to_be('(Anonymous)');
+      expect($double->__sphec_name())->to_be('<Anonymous>');
 
     it returns the first param to the constructor when it is a string
       $double = new Sphec\Mocks\Double('blech');
       expect($double->__sphec_name())->to_be('blech');
 
-    it is (Anonymous) when an array is the first arg to the constructor
+    it is <Anonymous> when an array is the first arg to the constructor
       $double = new Sphec\Mocks\Double(['blech' => 'foo']);
-      expect($double->__sphec_name())->to_be('(Anonymous)');
+      expect($double->__sphec_name())->to_be('<Anonymous>');
 
     it returns the first param to the constructor when it is a string and the second is supplied
       $double = new Sphec\Mocks\Double('blech', ['horf' => 'foo']);
       expect($double->__sphec_name())->to_be('blech');
+
+  describe __toString
+    it is <Anonymous> when nothing is passed to the constructor
+      $double = new Sphec\Mocks\Double;
+      expect("$double")->to_be('test_double(<Anonymous>)');
+
+    it returns the first param to the constructor when it is a string
+      $double = new Sphec\Mocks\Double('blech');
+      expect("$double")->to_be('test_double(blech)');
+
+    it is <Anonymous> when an array is the first arg to the constructor
+      $double = new Sphec\Mocks\Double(['blech' => 'foo']);
+      expect("$double")->to_be('test_double(<Anonymous>)');
+
+    it returns the first param to the constructor when it is a string and the second is supplied
+      $double = new Sphec\Mocks\Double('blech', ['horf' => 'foo']);
+      expect("$double")->to_be('test_double(blech)');
 
   describe __construct
     it converts the first param to recognized methods when it's a hash
@@ -74,7 +91,7 @@ specify Sphec\Mocks\Double
 
     it has an anonymous sphec name when passed no arguments
       $double = test_double();
-      expect($double->__sphec_name())->to_be('(Anonymous)');
+      expect($double->__sphec_name())->to_be('<Anonymous>');
 
     it the first argument as the sphec name when it's a string
       $double = test_double('my double');
