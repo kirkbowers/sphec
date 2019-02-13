@@ -13,6 +13,13 @@ specify Sphec\Allower
         @subject->to_receive('foo')->and_return(42);
         expect(@double->foo())->to_be(42);
 
+    describe to_receive with and_return
+      it adds a legal method on the test double using params
+        $other_double = test_double('other');
+        @subject->to_receive('foo')->with('blech', $other_double)->and_return(42);
+        expect(@double->foo('blech', $other_double))->to_be(42);
+        expect(@double->foo())->to_be(null);
+
   when used in the wild
     let double = test_double('test');
 
