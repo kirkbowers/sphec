@@ -16,6 +16,10 @@ specify Sphec\Mocks\Double
       $block = function() use ($double) { $double->foo(); };
       expect($block)->to_throw('Sphec\Mocks\UnstubbedMethodException');
 
+  describe __sphec_add_legal_function
+    before
+      @double = new Sphec\Mocks\Double;
+
     it does not throw an exception if you call a method that was added first
       @double->__sphec_add_legal_function('foo');
       $double = @double;
@@ -25,6 +29,24 @@ specify Sphec\Mocks\Double
     it returns the value associated with an added function when called
       @double->__sphec_add_legal_function('foo', 42);
       expect(@double->foo())->to_be(42);
+
+    it returns null when a legal function is called without specified params
+      @double->__sphec_add_legal_function('foo', ['barf'], 42);
+      expect(@double->foo())->to_be(null);
+
+    it returns the value associated with an added function when called with specified params
+      @double->__sphec_add_legal_function('foo', ['barf'], 42);
+      expect(@double->foo('barf'))->to_be(42);
+
+    it returns the answer associated with no params when both any params and specific params are specified
+      @double->__sphec_add_legal_function('foo', 3);
+      @double->__sphec_add_legal_function('foo', ['barf'], 42);
+      expect(@double->foo())->to_be(3);
+
+    it works with a test double as a parameter
+      $other_double = new Sphec\Mocks\Double('other');
+      @double->__sphec_add_legal_function('foo', ['barf', $other_double], 42);
+      expect(@double->foo('barf', $other_double))->to_be(42);
 
   describe __sphec_name
     it is <Anonymous> when nothing is passed to the constructor
@@ -83,6 +105,17 @@ specify Sphec\Mocks\Double
       expect(@double->__sphec_function_call_count('blech'))->to_be(1);
       @double->blech();
       expect(@double->__sphec_function_call_count('blech'))->to_be(2);
+
+    it counts both the generic call and the call with params
+      @double->__sphec_add_legal_function('foo', ['barf'], 42);
+      expect(@double->__sphec_function_call_count('foo'))->to_be(0);
+      expect(@double->__sphec_function_call_count('foo', ['barf']))->to_be(0);
+      @double->foo('barf');
+      expect(@double->__sphec_function_call_count('foo'))->to_be(1);
+      expect(@double->__sphec_function_call_count('foo', ['barf']))->to_be(1);
+      @double->foo();
+      expect(@double->__sphec_function_call_count('foo'))->to_be(2);
+      expect(@double->__sphec_function_call_count('foo', ['barf']))->to_be(1);
 
   describe test_double
     it returns a Double object
