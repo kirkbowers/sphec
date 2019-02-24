@@ -158,3 +158,24 @@ specify Sphec\Matchers\HaveReceivedMatcher
         @matcher->matches('legal_method')->exactly(3)->times();
         $expected = "Expected test_double(test) not to have received legal_method().";
         expect(@matcher->failure_message_when_negated())->to_eq($expected);
+
+  when chained with "with" and parameters
+    let double = test_double('test', ['legal_method' => true]);
+    let matcher = new Sphec\Matchers\HaveReceivedMatcher(@double);
+
+    before
+      allow(@double)->to_receive('legal_method')->with('foo')->and_return(null);
+
+    describe matches
+      let subject = @matcher->matches('legal_method')->with('foo');
+
+      it returns a falsey value when a legal method on a test double has not been called
+        expect(@subject)->not_to_succeed_matching();
+
+      it returns a falsey value when a legal method on a test double has been called but not with the params
+        @double->legal_method();
+        expect(@subject)->not_to_succeed_matching();
+
+      it returns a truthy value when a legal method on a test double has been called with the expected params
+        @double->legal_method('foo');
+        expect(@subject)->to_succeed_matching();

@@ -64,4 +64,13 @@ class HaveReceivedMatcher extends Matcher {
     // No-op for syntactic sugar
     return $this;
   }
+
+  public function with(...$args) {
+    $this->call_count = $this->actual->__sphec_function_call_count($this->expected, $args);
+    if ($this->call_count > 0) {
+      return $this;
+    } else {
+      return new FailedMatch($this);
+    }
+  }
 }

@@ -219,14 +219,13 @@ Sphec\Sphec::specify('Context', function($spec) {
     $spec->it('cascades to its parent when it does not have a let for the variable', function($spec) {
       $block = function($spec) {
       };
-      # TODO:
-      # Check explicitly for parameter when available
-      $parent = test_double('Parent context', ['get_lazy_variable' => 42]);
+      $scope = test_double('scope');
+      $parent = test_double('Parent context');
+      $parent->__sphec_add_legal_function('get_lazy_variable', [$scope, 'foo'], 42);
       $parent->_expector = test_double('expector');
       $parent->_expector->output = null;
       $context = new Sphec\Context('Context', $block, '', $parent);
       $context->quiet = true;
-      $scope = test_double('scope');
 
       $context->run();
       $spec->expect($context->get_lazy_variable($scope, 'foo'))->to_be(42);

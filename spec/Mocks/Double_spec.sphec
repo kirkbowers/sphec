@@ -22,9 +22,7 @@ specify Sphec\Mocks\Double
 
     it does not throw an exception if you call a method that was added first
       @double->__sphec_add_legal_function('foo');
-      $double = @double;
-      $block = function() use ($double) { $double->foo(); };
-      expect($block)->not_to_throw('Sphec\Mocks\UnstubbedMethodException');
+      expect({ @double->foo(); })->not_to_throw('Sphec\Mocks\UnstubbedMethodException');
 
     it returns the value associated with an added function when called
       @double->__sphec_add_legal_function('foo', 42);
@@ -47,6 +45,14 @@ specify Sphec\Mocks\Double
       $other_double = new Sphec\Mocks\Double('other');
       @double->__sphec_add_legal_function('foo', ['barf', $other_double], 42);
       expect(@double->foo('barf', $other_double))->to_be(42);
+
+    it returns a null value associated with an added function when called
+      @double->__sphec_add_legal_function('foo', null);
+      expect(@double->foo())->to_be(null);
+
+    it returns a null value associated with an added function when called with specified params
+      @double->__sphec_add_legal_function('foo', ['barf'], null);
+      expect(@double->foo('barf'))->to_be(null);
 
   describe __sphec_name
     it is <Anonymous> when nothing is passed to the constructor
@@ -116,6 +122,25 @@ specify Sphec\Mocks\Double
       @double->foo();
       expect(@double->__sphec_function_call_count('foo'))->to_be(2);
       expect(@double->__sphec_function_call_count('foo', ['barf']))->to_be(1);
+
+    it counts calls with params even if not explicitly added
+      expect(@double->__sphec_function_call_count('blech', ['horf']))->to_be(0);
+      @double->blech('horf');
+      expect(@double->__sphec_function_call_count('blech', ['horf']))->to_be(1);
+
+  describe __call
+    let @double = new Sphec\Mocks\Double(['blech' => 'foo']);
+
+    it returns the expected return value when passed no arguments
+      expect(@double->blech())->to_be('foo');
+
+    it returns the generic return value when passed unexpected arguments
+      @double->__sphec_add_legal_function('blech', ['barf'], 42);
+      expect(@double->blech('horf'))->to_be('foo');
+
+    it returns the more specific return value when passed expected arguments
+      @double->__sphec_add_legal_function('blech', ['barf'], 42);
+      expect(@double->blech('barf'))->to_be(42);
 
   describe test_double
     it returns a Double object
