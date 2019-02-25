@@ -12,6 +12,7 @@ class HaveReceivedMatcher extends Matcher {
   public function matches(...$args) {
     $this->expected = $args[0];
     $this->expected_times_message = "at least once";
+    $this->expected_params_message = '';
     $this->call_count = $this->actual->__sphec_function_call_count($this->expected);
     if ($this->call_count > 0) {
       return $this;
@@ -23,7 +24,7 @@ class HaveReceivedMatcher extends Matcher {
   public function failure_message() {
     $times = $this->call_count == 1 ? "time" : "times";
     return "Expected " . $this->to_string($this->actual) . " to have received " . $this->expected . "() "
-      . $this->expected_times_message . " but was called $this->call_count $times.";
+      . $this->expected_params_message . $this->expected_times_message . " but was called $this->call_count $times.";
   }
 
   public function failure_message_when_negated() {
@@ -66,6 +67,7 @@ class HaveReceivedMatcher extends Matcher {
   }
 
   public function with(...$args) {
+    $this->expected_params_message = 'with specific parameters ';
     $this->call_count = $this->actual->__sphec_function_call_count($this->expected, $args);
     if ($this->call_count > 0) {
       return $this;

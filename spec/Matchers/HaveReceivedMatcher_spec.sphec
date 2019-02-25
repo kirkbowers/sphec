@@ -179,3 +179,63 @@ specify Sphec\Matchers\HaveReceivedMatcher
       it returns a truthy value when a legal method on a test double has been called with the expected params
         @double->legal_method('foo');
         expect(@subject)->to_succeed_matching();
+
+    describe failure_message
+      it says expected to be called at least once with specific parameters
+        @matcher->matches('legal_method')->with('foo');
+        $expected = "Expected test_double(test) to have received legal_method() with specific parameters at least once but was called 0 times.";
+        expect(@matcher->failure_message())->to_eq($expected);
+
+    describe failure_message_when_negated
+      it says expected not to be called
+        @matcher->matches('legal_method')->with('foo');
+        $expected = "Expected test_double(test) not to have received legal_method().";
+        expect(@matcher->failure_message_when_negated())->to_eq($expected);
+
+  when chained with "with" and parameters and chained with twice
+    // I don't think it's necessary to try out every combination of chaining "with" with amount of times
+    // matchers.  If it works as we expect with one of the (I choose "twice" arbitrarily), then we can
+    // be reasonably confident it works with all.
+
+    let double = test_double('test', ['legal_method' => true]);
+    let matcher = new Sphec\Matchers\HaveReceivedMatcher(@double);
+
+    before
+      allow(@double)->to_receive('legal_method')->with('foo')->and_return(null);
+
+    describe matches
+      let subject = @matcher->matches('legal_method')->with('foo')->twice();
+
+      it returns a falsey value when a legal method on a test double has not been called
+        expect(@subject)->not_to_succeed_matching();
+
+      it returns a falsey value when a legal method on a test double has been called but not with the params
+        @double->legal_method();
+        expect(@subject)->not_to_succeed_matching();
+
+      it returns a falsey value when a legal method on a test double has been called twice but not with the params
+        @double->legal_method();
+        @double->legal_method();
+        expect(@subject)->not_to_succeed_matching();
+
+      it returns a falsey value when a legal method on a test double has been with the params only once
+        @double->legal_method('foo');
+        expect(@subject)->not_to_succeed_matching();
+
+      it returns a truthy value when a legal method on a test double has been called with the expected params twice
+        @double->legal_method('foo');
+        @double->legal_method('foo');
+        expect(@subject)->to_succeed_matching();
+
+    describe failure_message
+      it says expected to be called at least once with specific parameters
+        @matcher->matches('legal_method')->with('foo')->twice();
+        $expected = "Expected test_double(test) to have received legal_method() with specific parameters twice but was called 0 times.";
+        expect(@matcher->failure_message())->to_eq($expected);
+
+    describe failure_message_when_negated
+      it says expected not to be called
+        @matcher->matches('legal_method')->with('foo')->twice();
+        $expected = "Expected test_double(test) not to have received legal_method().";
+        expect(@matcher->failure_message_when_negated())->to_eq($expected);
+
