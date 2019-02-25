@@ -69,9 +69,10 @@ class SphecCommand extends Command {
     }
 
 
-    // set up the Sphec environment to collect all the results in one Expector/Reporter
+    // set up the Sphec environment to collect all the results in one Reporter
     // that has this Symfony Output object.
-    Sphec::$expector = new Expector($output);
+    Sphec::set_reporter(new Reporters\ProgressReporter($output));
+    // Sphec::set_reporter(new Reporters\DocumentationReporter($output));
 
     foreach ($php_files as $file) {
       include $file;

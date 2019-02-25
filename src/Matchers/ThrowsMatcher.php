@@ -5,10 +5,16 @@ namespace Sphec\Matchers;
 class ThrowsMatcher extends Matcher {
   const ALIASES = ['throw'];
 
+  private $but_threw = '';
+
   public function matches(...$args) {
     $expected = null;
-    if (sizeof($args) > 0) $expected = $args[0];
-    $this->expected = $expected;
+    if (sizeof($args) > 0) {
+      $expected = $args[0];
+      $this->expected = $expected;
+    } else {
+      $this->expected = 'any exception';
+    }
     $result = false;
 
     if (is_callable($this->actual)) {
@@ -19,6 +25,8 @@ class ThrowsMatcher extends Matcher {
           $result = true;
         } else if (is_a($e, $expected)) {
           $result = true;
+        } else {
+          $this->but_threw = get_class($e);
         }
       }
     }
@@ -27,10 +35,10 @@ class ThrowsMatcher extends Matcher {
   }
 
   public function failure_message() {
-    return "  expected to throw $this->expected";
+    return "  expected to throw $this->expected" . $this->but_threw;
   }
 
   public function failure_message_when_negated() {
-    return "  expected not to throw $this->expected";
+    return "  expected not to throw $this->expected" . $this->but_threw;
   }
 }

@@ -12,7 +12,19 @@ require_once 'Matchers/functions.php';
 class Sphec {
   private static $sphecs = array();
 
-  public static $expector = NULL;
+  private static $reporter;
+
+  public static function get_reporter() {
+    if (! self::$reporter) {
+      self::$reporter = new Reporters\SilentReporter;
+    }
+
+    return self::$reporter;
+  }
+
+  public static function set_reporter($reporter) {
+    self::$reporter = $reporter;
+  }
 
   /**
    * The entry point for building a specification.
@@ -24,7 +36,7 @@ class Sphec {
    *   the mojo that a Context does (describe, it, etc.).
    */
   public static function specify($label, $block) {
-    $spec = new Context($label, $block, '', NULL, self::$expector);
+    $spec = new Context($label, $block, '', NULL);
 
     self::$sphecs[] = $spec;
   }
@@ -38,18 +50,6 @@ class Sphec {
       $spec->run();
     }
 
-    if (self::$expector->output && !self::$expector->output->isQuiet()) {
-      self::$expector->output->writeln("");
-
-      self::$expector->report_failures();
-
-      self::$expector->output->writeln("Successes: " . self::$expector->passed . ", Failures: " . self::$expector->failed);
-
-      if (self::$expector->failed == 0) {
-        self::$expector->output->writeln("<fg=green>Success!</fg=green>");
-      } else {
-        self::$expector->output->writeln("<fg=red>Failure!</fg=red>");
-      }
-    }
+    self::$reporter->report_final_summary();
   }
 }

@@ -9,7 +9,6 @@ namespace Sphec;
 class Example extends Runnable {
   function __construct($label, $block, $indent, $parent) {
     parent::__construct($label, $block, $indent, $parent);
-    $this->_expector = $parent->_expector;
   }
 
   /**
@@ -18,7 +17,8 @@ class Example extends Runnable {
    * @param $value The calculated value to be compared to an expected value.
    */
   public function expect($value) {
-    return $this->_expector->test($value, $this);
+    // return Sphec::get_reporter()->test($value, $this);
+    return new Tester($value, Sphec::get_reporter(), $this);
   }
 
   public function allow($value) {
@@ -29,14 +29,17 @@ class Example extends Runnable {
     $this->_parent->run_befores($this);
 
     try {
-      if ($this->_expector->output && $this->_expector->output->isVerbose()) {
-        $this->_expector->output->writeln($this->_indent . $this->_label);
-        $this->_expector->output->write($this->_indent);
-      }
+      // if (Sphec::get_reporter()->output && Sphec::get_reporter()->output->isVerbose()) {
+      //   Sphec::get_reporter()->output->writeln($this->_indent . $this->_label);
+      //   Sphec::get_reporter()->output->write($this->_indent);
+      // }
       $this->_block->__invoke($this);
-      if ($this->_expector->output && $this->_expector->output->isVerbose()) {
-        $this->_expector->output->writeln('');
-      }
+      // if (Sphec::get_reporter()->output && Sphec::get_reporter()->output->isVerbose()) {
+      //   Sphec::get_reporter()->output->writeln('');
+      // }
+      Sphec::get_reporter()->pass();
+    } catch (\Sphec\FailedMatchException $e) {
+      Sphec::get_reporter()->fail($this->get_full_name(), $e->getMessage());
     } catch (\Sphec\Mocks\UnstubbedMethodException $e) {
       throw $e;
     } catch (\Exception $e) {

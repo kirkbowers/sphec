@@ -12,15 +12,8 @@ class Context extends Runnable {
   private $_afters = array();
   private $_lazy_variables = array();
 
-  function __construct($label, $block, $indent = '', $parent = NULL, $expector = NULL) {
+  function __construct($label, $block, $indent = '', $parent = NULL) {
     parent::__construct($label, $block, $indent, $parent);
-    if ($expector) {
-      $this->_expector = $expector;
-    } else if ($parent) {
-      $this->_expector = $parent->_expector;
-    } else {
-      $this->_expector = new Expector();
-    }
     $block($this);
   }
 
@@ -148,12 +141,12 @@ class Context extends Runnable {
    * Runs all the tests in this scope.
    */
   public function run() {
-    if ($this->_expector->output && $this->_expector->output->isVerbose()) {
-      $this->_expector->output->writeln($this->_indent . $this->_label);
-    }
+    Sphec::get_reporter()->report_context_start($this->_label);
 
     foreach ($this->_tests as $test) {
       $test->run();
     }
+
+    Sphec::get_reporter()->report_context_end($this->_label);
   }
 }

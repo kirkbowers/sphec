@@ -1,4 +1,190 @@
 specify Sphec\Tester
+  describe to_be_equivalent
+    let @tester = new Sphec\Tester(3);
+
+    it passes with same value and type
+      expect(@tester->to_be_equivalent(3))->to_be_truthy();
+
+    it fails with different value and same type
+      expect({ @tester->to_be_equivalent(4); })->to_throw('Sphec\FailedMatchException');
+
+    it fails with same value and different type
+      expect({ @tester->to_be_equivalent("3"); })->to_throw('Sphec\FailedMatchException');
+
+  describe to_be
+    let tester = new Sphec\Tester(3);
+
+    it passes with same value and type
+      expect(@tester->to_be(3))->to_be_truthy();
+
+    it fails with different value and same type
+      expect({ @tester->to_be(4); })->to_throw('Sphec\FailedMatchException');
+
+    it fails with same value and different type
+      expect({ @tester->to_be("3"); })->to_throw('Sphec\FailedMatchException');
+
+  describe to_equal
+    let tester = new Sphec\Tester(3);
+
+    it passes with same value and type
+      expect(@tester->to_equal(3))->to_be_truthy();
+
+    it fails with different value and same type
+      expect({ @tester->to_equal(4); })->to_throw('Sphec\FailedMatchException');
+
+  describe to_not_be
+    let tester = new Sphec\Tester(3);
+
+    it fails with same value and type
+      expect({ @tester->to_not_be(3); })->to_throw('Sphec\FailedMatchException');
+
+    it passes with different value and same type
+      expect(@tester->to_not_be(4))->to_be_truthy();
+
+    it passes with same value and different type
+      expect(@tester->to_not_be("3"))->to_be_truthy();
+
+  describe to_not_equal
+    let tester = new Sphec\Tester(3);
+
+    it fails with same value and type
+      expect({ @tester->to_not_equal(3); })->to_throw('Sphec\FailedMatchException');
+
+    it passes with different value and same type
+      expect(@tester->to_not_equal(4))->to_be_truthy();
+
+    it fails with same value and different type
+      expect({ @tester->to_not_equal("3"); })->to_throw('Sphec\FailedMatchException');
+
+  describe to_be_truthy
+    it passes with true
+      @tester = new Sphec\Tester(true);
+      expect(@tester->to_be_truthy())->to_be_truthy();
+
+    it fails with false
+      @tester = new Sphec\Tester(false);
+      expect({ @tester->to_be_truthy(); })->to_throw('Sphec\FailedMatchException');
+
+    it passes with a non-boolean truthy value
+      @tester = new Sphec\Tester(1);
+      expect(@tester->to_be_truthy())->to_be_truthy();
+
+    it fails with a non-boolean falsy value
+      @tester = new Sphec\Tester(0);
+      expect({ @tester->to_be_truthy(); })->to_throw('Sphec\FailedMatchException');
+
+  describe to_be_falsy
+    it passes with false
+      @tester = new Sphec\Tester(false);
+      expect(@tester->to_be_falsy())->to_be_truthy();
+
+    it fails with true
+      @tester = new Sphec\Tester(true);
+      expect({ @tester->to_be_falsy(); })->to_throw('Sphec\FailedMatchException');
+
+    it fails with a non-boolean truthy value
+      @tester = new Sphec\Tester(1);
+      expect({ @tester->to_be_falsy(); })->to_throw('Sphec\FailedMatchException');
+
+    it passes with zero
+      @tester = new Sphec\Tester(0);
+      expect(@tester->to_be_falsy())->to_be_truthy();
+
+    it passes with null
+      @tester = new Sphec\Tester(null);
+      expect(@tester->to_be_falsy())->to_be_truthy();
+
+    it passes with string "0"
+      @tester = new Sphec\Tester('0');
+      expect(@tester->to_be_falsy())->to_be_truthy();
+
+    it passes with empty array
+      @tester = new Sphec\Tester(array());
+      expect(@tester->to_be_falsy())->to_be_truthy();
+
+  describe to_compare
+    context with the comparitor >
+      let tester = new Sphec\Tester(3);
+
+      it fails with same value and type
+        expect({ @tester->to_compare('>', 3); })->to_throw('Sphec\FailedMatchException');
+
+      it fails with lesser value and same type
+        expect({ @tester->to_compare('>', 4); })->to_throw('Sphec\FailedMatchException');
+
+      it passes with greater value and same type
+        expect(@tester->to_compare('>', 2))->to_be_truthy();
+
+      it passes with greater value and different type
+        expect(@tester->to_compare('>', "2"))->to_be_truthy();
+
+    context with the comparitor >=
+      let tester = new Sphec\Tester(3);
+
+      it passes with same value and type
+        expect(@tester->to_compare('>=', 3))->to_be_truthy();
+
+      it fails with lesser value and same type
+        expect({ @tester->to_compare('>=', 4); })->to_throw('Sphec\FailedMatchException');
+
+      it passes with greater value and same type
+        expect(@tester->to_compare('>=', 2))->to_be_truthy();
+
+      it passes with greater value and different type
+        expect(@tester->to_compare('>=', "2"))->to_be_truthy();
+
+    context with the comparitor <
+      let tester = new Sphec\Tester(3);
+
+      it fails with same value and type
+        expect({ @tester->to_compare('<', 3); })->to_throw('Sphec\FailedMatchException');
+
+      it fails with greater value and same type
+        expect({ @tester->to_compare('<', 2); })->to_throw('Sphec\FailedMatchException');
+
+      it passes with lesser value and same type
+        expect(@tester->to_compare('<', 4))->to_be_truthy();
+
+      it passes with lesser value and different type
+        expect(@tester->to_compare('<', "4"))->to_be_truthy();
+
+    context with the comparitor <=
+      let tester = new Sphec\Tester(3);
+
+      it passes with same value and type
+        expect(@tester->to_compare('<=', 3))->to_be_truthy();
+
+      it fails with greater value and same type
+        expect({ @tester->to_compare('<=', 2); })->to_throw('Sphec\FailedMatchException');
+
+      it passes with lesser value and same type
+        expect(@tester->to_compare('<=', 4))->to_be_truthy();
+
+      it passes with lesser value and different type
+        expect(@tester->to_compare('<=', "4"))->to_be_truthy();
+
+  describe to_throw
+    it passes when throwing a match
+      @tester = new Sphec\Tester(function() { throw new OutOfRangeException; });
+      expect(@tester->to_throw('OutOfRangeException'))->to_be_truthy();
+
+    it passes when throwing a subclass
+      @tester = new Sphec\Tester(function() { throw new OutOfRangeException; });
+      expect(@tester->to_throw('Exception'))->to_be_truthy();
+
+    it fails when it does not throw
+      @tester = new Sphec\Tester(function () { });
+      expect({ @tester->to_throw('Exception'); })->to_throw('Sphec\FailedMatchException');
+
+  describe not_to_throw
+    it passes when nothing is thrown
+      @tester = new Sphec\Tester(function () { });
+      expect(@tester->not_to_throw())->to_be_truthy();
+
+    it fails when it does throw something
+      @tester = new Sphec\Tester(function() { throw new OutOfRangeException; });
+      expect({ @tester->not_to_throw(); })->to_throw('Sphec\FailedMatchException');
+
   describe register_matcher
     before
       if (!class_exists('Sphec_Tester_spec_FakeMatcher')) {
@@ -38,4 +224,4 @@ specify Sphec\Tester
       expect(@subject->to_fake())->to_be(true);
 
     it creates a not_to_* method that returns the matches method's result negated
-      expect(@subject->not_to_fake())->to_be(false);
+      expect({ @subject->not_to_fake(); })->to_throw('Sphec\FailedMatchException');
