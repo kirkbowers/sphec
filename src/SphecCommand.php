@@ -37,6 +37,13 @@ class SphecCommand extends Command {
     $this->setName("sphec")
         ->setDescription("Runs all the sphec spec files with the name pattern *_spec.php")
         ->addArgument('Folders', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Folders to look for spec files in (Default: spec)');
+
+    $this->addOption(
+      'format',
+      'f',
+      InputOption::VALUE_OPTIONAL,
+      'The format for the output, choices are progress and documentation',
+      'progress');
   }
 
   protected function execute(InputInterface $input, OutputInterface $output){
@@ -71,8 +78,11 @@ class SphecCommand extends Command {
 
     // set up the Sphec environment to collect all the results in one Reporter
     // that has this Symfony Output object.
-    Sphec::set_reporter(new Reporters\ProgressReporter($output));
-    // Sphec::set_reporter(new Reporters\DocumentationReporter($output));
+    if (substr($input->getOption('format'), 0, 1) === 'd') {
+      Sphec::set_reporter(new Reporters\DocumentationReporter($output));
+    } else {
+      Sphec::set_reporter(new Reporters\ProgressReporter($output));
+    }
 
     foreach ($php_files as $file) {
       include $file;

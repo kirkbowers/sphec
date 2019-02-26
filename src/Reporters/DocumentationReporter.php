@@ -14,4 +14,12 @@ class DocumentationReporter extends ConsoleReporter {
       $this->indent = substr($this->indent, 2);
     }
   }
+
+  protected function report_pass($label) {
+    $this->get_output()->writeln("$this->indent<fg=green>$label</fg=green>");
+  }
+
+  protected function report_fail($label) {
+    $this->get_output()->writeln("$this->indent<fg=red>$label</fg=red>");
+  }
 }

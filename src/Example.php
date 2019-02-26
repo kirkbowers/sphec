@@ -37,9 +37,9 @@ class Example extends Runnable {
       // if (Sphec::get_reporter()->output && Sphec::get_reporter()->output->isVerbose()) {
       //   Sphec::get_reporter()->output->writeln('');
       // }
-      Sphec::get_reporter()->pass();
+      Sphec::get_reporter()->pass($this->_label);
     } catch (\Sphec\FailedMatchException $e) {
-      Sphec::get_reporter()->fail($this->get_full_name(), $e->getMessage());
+      Sphec::get_reporter()->fail($this->_label, $this->get_full_name(), $e->getMessage());
     } catch (\Sphec\Mocks\UnstubbedMethodException $e) {
       throw $e;
     } catch (\Exception $e) {
