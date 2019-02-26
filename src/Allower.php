@@ -7,12 +7,9 @@ class Allower {
   private $_with = null;
 
   public function __construct($object) {
-    if ($object instanceof \Sphec\Mocks\Double) {
-      $this->_double = $object;
-    } else {
-      // TODO:
-      // Create a spy double
-    }
+    // TODO:
+    // Throw an exception if this isn't a mock?
+    $this->_double = $object;
   }
 
   public function to_receive($name) {

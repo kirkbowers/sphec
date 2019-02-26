@@ -56,9 +56,9 @@ class Tester {
       return $result;
     }
 
-    if (! $matcher_class) {
+    // if (! $matcher_class) {
       parent::__call($method, $args);
-    }
+    // }
   }
 
   private function create_matcher($alias, $args) {

@@ -177,10 +177,10 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
       $spec->expect($result)->to_be($expected);
     });
 
-    $spec->it('returns the line with the allow converted', function($spec) {
+    $spec->it('returns the line with the allow converted and the subject converted to a mock', function($spec) {
       $dsl = new Sphec\DSLifier('');
       $result = $dsl->process_allow('allow(@double)->to_receive("blah");');
-      $expected = "\$spec->allow(\$spec->double)->to_receive(\"blah\");";
+      $expected = "\$spec->allow(\$spec->double = \\Sphec\\Mocks\\SpyDouble::factory(\$spec->double))->to_receive(\"blah\");";
       $spec->expect($result)->to_be($expected);
     });
   });
@@ -589,7 +589,7 @@ EOF;
 Sphec\\Sphec::specify('MyClass', function(\$spec) {
   \$spec->before(function(\$spec) {
     \$spec->foo = test_double();
-    \$spec->allow(\$spec->foo)->to_receive('blah');
+    \$spec->allow(\$spec->foo = \\Sphec\\Mocks\\SpyDouble::factory(\$spec->foo))->to_receive('blah');
   });
 });
 

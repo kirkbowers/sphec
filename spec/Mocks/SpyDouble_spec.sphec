@@ -1,0 +1,37 @@
+if (!class_exists('Sphec_Spyee')) {
+  class Sphec_Spyee {
+    public function two_plus_two() {
+      return 4;
+    }
+
+    public function ultimate_answer() {
+      return 42;
+    }
+  }
+}
+
+specify Sphec\Mocks\SpyDouble
+  describe ::factory
+    it returns its argument unmodified if it is already a mock
+      $spyee = test_double('spyee');
+      expect(Sphec\Mocks\SpyDouble::factory($spyee))->to_be($spyee);
+
+    it returns its argument wrapped in a SpyDouble if it is not already a mock
+      $spyee = new Sphec_Spyee;
+      expect(Sphec\Mocks\SpyDouble::factory($spyee) instanceof Sphec\Mocks\SpyDouble)->to_be_truthy();
+
+  when an instance has been turned into a spy by allow
+    let spyee = new Sphec_Spyee;
+
+    before
+      allow(@spyee)->to_receive('two_plus_two')->and_return(5);
+
+    it returns the overridden return value
+      expect(@spyee->two_plus_two())->to_be(5);
+
+    it detects that the method has been called
+      @spyee->two_plus_two();
+      expect(@spyee)->to_have_received('two_plus_two');
+
+    it still runs unstubbed methods as if nothing has changed
+      expect(@spyee->ultimate_answer())->to_be(42);

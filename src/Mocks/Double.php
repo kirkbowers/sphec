@@ -85,8 +85,12 @@ namespace Sphec\Mocks {
         }
         return $this->_legal_functions[$name];
       } else {
-        throw new UnstubbedMethodException("Call of unstubbed method $name on test double $this->_name");
+        return $this->__sphec_handle_unstubbed_method($name, $arguments);
       }
+    }
+
+    protected function __sphec_handle_unstubbed_method($name, $arguments) {
+      throw new UnstubbedMethodException("Call of unstubbed method $name on test double $this->_name");
     }
 
     public function __toString() {

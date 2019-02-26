@@ -29,14 +29,7 @@ class Example extends Runnable {
     $this->_parent->run_befores($this);
 
     try {
-      // if (Sphec::get_reporter()->output && Sphec::get_reporter()->output->isVerbose()) {
-      //   Sphec::get_reporter()->output->writeln($this->_indent . $this->_label);
-      //   Sphec::get_reporter()->output->write($this->_indent);
-      // }
       $this->_block->__invoke($this);
-      // if (Sphec::get_reporter()->output && Sphec::get_reporter()->output->isVerbose()) {
-      //   Sphec::get_reporter()->output->writeln('');
-      // }
       Sphec::get_reporter()->pass($this->_label);
     } catch (\Sphec\FailedMatchException $e) {
       Sphec::get_reporter()->fail($this->_label, $this->get_full_name(), $e->getMessage());

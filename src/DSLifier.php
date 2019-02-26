@@ -67,8 +67,10 @@ class DSLifier {
   }
 
   public function process_allow($line) {
-    if (preg_match('/^allow\s*\((.*)$/', $line, $matches)) {
-      $result = "\$spec->allow(" . $matches[1];
+    if (preg_match('/^allow\s*\(([^\)]+)(.*)$/', $line, $matches)) {
+      $spyee = $matches[1];
+      $remainder = $matches[2];
+      $result = "\$spec->allow($spyee = \\Sphec\\Mocks\\SpyDouble::factory($spyee)$remainder";
       return $this->process_local_vars($result);
     } else {
       return false;
