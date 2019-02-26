@@ -41,11 +41,10 @@ class Example extends Runnable {
     } catch (\Sphec\FailedMatchException $e) {
       Sphec::get_reporter()->fail($this->_label, $this->get_full_name(), $e->getMessage());
     } catch (\Sphec\Mocks\UnstubbedMethodException $e) {
-      throw $e;
+      Sphec::get_reporter()->fail($this->_label, $this->get_full_name(), $e->getMessage());
     } catch (\Exception $e) {
-      // TODO:
-      // Report it as an error
-      throw $e;
+      Sphec::get_reporter()->fail($this->_label, $this->get_full_name(),
+        "Error!! " . get_class($e) . " thrown: " . $e->getMessage() . "\n" . $e->getTraceAsString());
     } finally {
       $this->_parent->run_afters($this);
     }
