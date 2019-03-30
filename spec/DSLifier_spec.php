@@ -69,8 +69,8 @@ Sphec\Sphec::specify('DSLifier', function($spec) {
     $spec->it('converts a describe with a simple string', function($spec) {
       $dsl = new Sphec\DSLifier('');
       $matches = $dsl->matches_command('describe', 'describe my_method');
-      $result = $dsl->process_command($matches[1], "\$spec->describe");
-      $expected = "\$spec->describe('my_method', function(\$spec) {";
+      $result = $dsl->process_command($matches[1], "\$spec->describe", 1);
+      $expected = "\$spec->describe(1, 'my_method', function(\$spec) {";
       $spec->expect($result)->to_be($expected);
     });
   });
@@ -225,7 +225,7 @@ EOF;
 
       $output = <<<EOF
 Sphec\\Sphec::specify('MyClass', function(\$spec) {
-  \$spec->describe('my_method', function(\$spec) {
+  \$spec->describe(2, 'my_method', function(\$spec) {
   });
 });
 
@@ -244,9 +244,9 @@ EOF;
 
       $output = <<<EOF
 Sphec\\Sphec::specify('MyClass', function(\$spec) {
-  \$spec->describe('my_method', function(\$spec) {
+  \$spec->describe(2, 'my_method', function(\$spec) {
   });
-  \$spec->describe('other_method', function(\$spec) {
+  \$spec->describe(3, 'other_method', function(\$spec) {
   });
 });
 
@@ -265,8 +265,8 @@ EOF;
 
       $output = <<<EOF
 Sphec\\Sphec::specify('MyClass', function(\$spec) {
-  \$spec->describe('my_method', function(\$spec) {
-    \$spec->describe('other_method', function(\$spec) {
+  \$spec->describe(2, 'my_method', function(\$spec) {
+    \$spec->describe(3, 'other_method', function(\$spec) {
     });
   });
 });
@@ -288,13 +288,13 @@ EOF;
 
       $output = <<<EOF
 Sphec\\Sphec::specify('MyClass', function(\$spec) {
-  \$spec->describe('my_method', function(\$spec) {
-    \$spec->context('interesting situation', function(\$spec) {
+  \$spec->describe(2, 'my_method', function(\$spec) {
+    \$spec->context(3, 'interesting situation', function(\$spec) {
     });
-    \$spec->context('other situation', function(\$spec) {
+    \$spec->context(4, 'other situation', function(\$spec) {
     });
   });
-  \$spec->describe('other_method', function(\$spec) {
+  \$spec->describe(5, 'other_method', function(\$spec) {
   });
 });
 
@@ -312,7 +312,7 @@ EOF;
 
       $output = <<<EOF
 Sphec\\Sphec::specify('MyClass', function(\$spec) {
-  \$spec->context('when this is the scenario', function(\$spec) {
+  \$spec->context(2, 'when this is the scenario', function(\$spec) {
   });
 });
 

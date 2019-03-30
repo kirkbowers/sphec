@@ -44,8 +44,12 @@ class DSLifier {
     return false;
   }
 
-  public function process_command($argument, $replacement) {
-    return $replacement . "('" . str_replace("'", "\\'", $argument) .
+  public function process_command($argument, $replacement, $line_num = null) {
+    $result = $replacement . "(";
+    if ($line_num) {
+      $result .= $line_num . ", ";
+    }
+    return  $result . "'" . str_replace("'", "\\'", $argument) .
       "', function(\$spec) {";
   }
 
@@ -213,15 +217,15 @@ class DSLifier {
         } else if ($matches = $this->matches_command('describe', $command)) {
           $this->handle_indent($this_indent);
           $this->result .= $this_indent .
-            $this->process_command($matches[1], "\$spec->describe") . "\n";
+            $this->process_command($matches[1], "\$spec->describe", $this->line_num) . "\n";
         } else if ($matches = $this->matches_command('context', $command)) {
           $this->handle_indent($this_indent);
           $this->result .= $this_indent .
-            $this->process_command($matches[1], "\$spec->context") . "\n";
+            $this->process_command($matches[1], "\$spec->context", $this->line_num) . "\n";
         } else if ($matches = $this->matches_command('when', $command)) {
           $this->handle_indent($this_indent);
           $this->result .= $this_indent .
-            $this->process_command('when ' . $matches[1], "\$spec->context") . "\n";
+            $this->process_command('when ' . $matches[1], "\$spec->context", $this->line_num) . "\n";
         } else if ($matches = $this->matches_command('it', $command)) {
           $this->handle_indent($this_indent);
           $this->result .= $this_indent .

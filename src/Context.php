@@ -12,8 +12,8 @@ class Context extends Runnable {
   private $_afters = array();
   private $_lazy_variables = array();
 
-  function __construct($label, $block, $indent = '', $parent = NULL) {
-    parent::__construct($label, $block, $indent, $parent);
+  function __construct($label, $block, $indent = '', $parent = NULL, $line_number = NULL) {
+    parent::__construct($label, $block, $indent, $parent, $line_number);
     $block($this);
   }
 
@@ -29,8 +29,17 @@ class Context extends Runnable {
    *    instance that can perform all
    *    the mojo that a Context does (describe, it, etc.).
    */
-  public function describe($label, $block) {
-    return $this->_tests[] = new Context($label, $block, $this->_indent . '  ', $this);
+  public function describe(...$args) {
+    if (count($args) > 2) {
+      $line_number = $args[0];
+      $label = $args[1];
+      $block = $args[2];
+    } else {
+      $line_number = null;
+      $label = $args[0];
+      $block = $args[1];
+    }
+    return $this->_tests[] = new Context($label, $block, $this->_indent . '  ', $this, $line_number);
   }
 
   /**
@@ -47,8 +56,8 @@ class Context extends Runnable {
    *    instance that can perform all
    *    the mojo that a Context does (describe, it, etc.).
    */
-  public function context( $label, $block) {
-    return $this->describe($label, $block);
+  public function context(...$args) {
+    return $this->describe(...$args);
   }
 
   /**
@@ -99,8 +108,17 @@ class Context extends Runnable {
    *    for this example.  It should take one parameter, which will be the Example
    *    instance that can perform `expect` methods.
    */
-  public function it($label, $block) {
-    return $this->_tests[] = new Example($label, $block, $this->_indent . '  ', $this);
+  public function it(...$args) {
+    if (count($args) > 2) {
+      $line_number = $args[0];
+      $label = $args[1];
+      $block = $args[2];
+    } else {
+      $line_number = null;
+      $label = $args[0];
+      $block = $args[1];
+    }
+    return $this->_tests[] = new Example($label, $block, $this->_indent . '  ', $this, $line_number);
   }
 
   /**

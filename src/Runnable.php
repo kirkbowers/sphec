@@ -14,14 +14,16 @@ abstract class Runnable {
   protected $_block;
   protected $_indent;
   protected $_parent;
-  
+  private $_line_number;
+
   public    $_expector;
-  
-  function __construct($label, $block, $indent = '', $parent = NULL) {
+
+  function __construct($label, $block, $indent = '', $parent = NULL, $line_number = NULL) {
     $this->_label = $label;
     $this->_block = $block;
     $this->_indent = $indent;
     $this->_parent = $parent;
+    $this->_line_number = $line_number;
   }
 
   public function get_full_name() {
@@ -29,8 +31,12 @@ abstract class Runnable {
     if ($this->_parent) {
       $result = $this->_parent->get_full_name() . ' ';
     }
-    
+
     return $result . $this->_label;
+  }
+
+  public function get_line_number() {
+    return $this->_line_number;
   }
 
   abstract public function run();
