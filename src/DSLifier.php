@@ -229,7 +229,7 @@ class DSLifier {
         } else if ($matches = $this->matches_command('it', $command)) {
           $this->handle_indent($this_indent);
           $this->result .= $this_indent .
-            $this->process_command($matches[1], "\$spec->it") . "\n";
+            $this->process_command($matches[1], "\$spec->it", $this->line_num) . "\n";
         } else if ($matches = $this->matches_simple_command('before', $command)) {
           $this->handle_indent($this_indent);
           $this->result .= $this_indent .

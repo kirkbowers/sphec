@@ -332,7 +332,7 @@ EOF;
 
       $output = <<<EOF
 Sphec\\Sphec::specify('MyClass', function(\$spec) {
-  \$spec->it('does that thing', function(\$spec) {
+  \$spec->it(2, 'does that thing', function(\$spec) {
     \$foo = 1;
     \$blech = 2;
   });
@@ -372,7 +372,7 @@ Sphec\\Sphec::specify('MyClass', function(\$spec) {
   \$spec->before(function(\$spec) {
     \$spec->foo = 3;
   });
-  \$spec->it('does that thing', function(\$spec) {
+  \$spec->it(4, 'does that thing', function(\$spec) {
     \$spec->foo = 1;
     \$blech = 2;
   });
@@ -400,7 +400,7 @@ Sphec\\Sphec::specify('MyClass', function(\$spec) {
   \$spec->after(function(\$spec) {
     \$spec->foo = 3;
   });
-  \$spec->it('does that thing', function(\$spec) {
+  \$spec->it(4, 'does that thing', function(\$spec) {
     \$spec->foo = 1;
     \$blech = 2;
     \$spec->expect(\$spec->foo + \$blech)->to_be(3);
@@ -435,7 +435,7 @@ Sphec\\Sphec::specify('MyClass', function(\$spec) {
       3;
     \$spec->blech = 2;
   });
-  \$spec->it('does that thing', function(\$spec) {
+  \$spec->it(6, 'does that thing', function(\$spec) {
     \$spec->expect(function() {
       throw new Exception;
     })->to_throw('Exception');
@@ -474,7 +474,7 @@ Some stuff
 Some more stuff
 END;
   });
-  \$spec->it('does that thing', function(\$spec) {
+  \$spec->it(7, 'does that thing', function(\$spec) {
     \$blech = <<<EOS
 Some stuff
 Some more stuff
@@ -509,7 +509,7 @@ Sphec\\Sphec::specify('MyClass', function(\$spec) {
     \$spec->foo = 3;
     \$spec->blech = 2;
   });
-  \$spec->it('does that thing', function(\$spec) {
+  \$spec->it(5, 'does that thing', function(\$spec) {
 //     expect(function() {
 //       throw new Exception;
 //     })->to_throw('Exception');
